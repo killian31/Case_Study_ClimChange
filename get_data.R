@@ -10,8 +10,13 @@ ui <- fluidPage(
   titlePanel("NASA Power Explorer"),
   fluidRow(
     column(
-      width = 12,
+      width = 6,
       h4("Click on the map and download the temperature data for the clicked coordinates."),
+    ),
+    column(
+      width = 6,
+      dateInput("start_date", "Start Date", value = "1985-01-01"),
+      dateInput("end_date", "End Date", value = "2023-01-31")
     )
   ),
   fluidRow(
@@ -19,7 +24,7 @@ ui <- fluidPage(
   ),
   br(),
   fluidRow(
-    column(width = 12, actionButton("use_clik_loc", "Download Data from Clicked Location", class = "btn-primary"))
+    column(width = 12, actionButton("use_clik_loc", "Download Data", class = "btn-primary"))
   ),
   br(),
   fluidRow(
@@ -34,11 +39,15 @@ server <- function(input, output, session) {
   
   observeEvent(input$use_clik_loc, {
     last_click <- isolate(as.data.frame(input$map_click))
-    lonlat = c(last_click$lng, last_click$lat)
+    lonlat <- c(last_click$lng, last_click$lat)
     
-    # Display a message about the selected location
+    # Get selected dates from the date inputs
+    start_date <- input$start_date
+    end_date <- input$end_date
+    
+    # Display a message about the selected location and parameters
     showNotification(
-      glue("Downloading data for location: {lonlat[1]}, {lonlat[2]}"),
+      glue("Downloading data for location {lonlat[1]}, {lonlat[2]} from {start_date} to {end_date}"),
       duration = 5,
       type = "message"
     )
@@ -49,11 +58,11 @@ server <- function(input, output, session) {
       pars = c("T2M_MIN", "T2M_MAX", "T2M"),
       lonlat = lonlat,
       temporal_api = "daily",
-      dates = c("1985-01-01", "2023-01-31")
+      dates = c(start_date, end_date)
     )
     
     # Save the dataset to a CSV file
-    write.csv(daily_single_ag, glue("./dataset_{lonlat[1]}_{lonlat[2]}.csv"), row.names = FALSE)
+    write.csv(daily_single_ag, glue("./dataset_{lonlat[1]}_{lonlat[2]}_{start_date}_{end_date}.csv"), row.names = FALSE)
     
     # Display a success message
     showNotification(

@@ -1,0 +1,28 @@
+# Étude de l'impact du changement climatique sur les migrations
+
+## Les données
+
+Données temporelles (journalières) et spatiales (pays) On se concentre sur des pays car on travaille sur le monde entier.
+
+Série temporelle température en fonction du temps -\> dans une deuxième partie, pas intéressant car pour prédiction.
+
+## Premier objectif
+
+Calculer la température min max et moyenne pour chaque année et observer l'évolution des 3 en fonction des années. On doit obtenir une distribution (365 valeurs par année) par année et par pays. $\rightarrow$ on pourra comparer les distributions de chaque année.
+
+TODO: récupérer les données et calculer les statistiques de base qui nous intéressent :
+
+|       | min | $q_{0.05}$ | $q_{0.10}$ | $q_{0.5}$ | Mean | $q_{0.90}$ | $q_{0.95}$ | max |
+|-------|-----|------------|------------|-----------|------|------------|------------|-----|
+| Tmin  |     |            |            |           |      |            |            |     |
+| Tmax  |     |            |            |           |      |            |            |     |
+| Tmean |     |            |            |           |      |            |            |     |
+
+\+ Faire pour 1 pays une série temporelle des extrêmes et de la moyenne.
+
+## Répartition des zones par groupe
+
+|       Europe       | 44 |
+|       Afrique      | 53 |
+|        Asie        | 48 |
+| Amérique + Océanie | 52 |

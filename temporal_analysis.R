@@ -16,6 +16,6 @@ compare_distrib <- function(dataset, variable) {
   
   ggsave(paste(variable, "_distribution_years.png"), plot = p, width = 10, height = 6)
 }
-for (variable in c("T2M", "T2M_MIN", "T2M_MAX")) {
+for (variable in c("T2M", "T2M_MIN", "T2M_MAX", "T2M_RANGE")) {
   compare_distrib(combined_data_1990_2020, variable)
 }

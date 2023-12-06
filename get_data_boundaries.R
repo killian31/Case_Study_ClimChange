@@ -36,10 +36,13 @@ get_yearly_data <- function(year, iso3 = "UKR", geodata_file = "./world-administ
   ymax <- bbox_list$ymax
   
   smaller_bbox <- centered_bounding_box(xmin, ymin, xmax, ymax)
+  # TODO
+  # st_intersect pour exclure les points de la bbox hors du pays
+  # st buffer pour jsp trop quoi
   
   daily_single <- get_power(
     community = "ag",
-    pars = c("T2M_MIN", "T2M_MAX", "T2M"),
+    pars = c("T2M_MIN", "T2M_MAX", "T2M", "T2M_RANGE"),
     lonlat = smaller_bbox,
     temporal_api = "daily",
     dates = c(paste(year,"-01-01", sep=""), paste(year,"12-31", sep=""))
@@ -49,8 +52,8 @@ get_yearly_data <- function(year, iso3 = "UKR", geodata_file = "./world-administ
     summarise(
       LAT = mean(LAT),
       LON = mean(LON),
-      T2M_MIN = mean(T2M_MIN),
-      T2M_MAX = mean(T2M_MAX),
+      T2M_MIN = min(T2M_MIN),
+      T2M_MAX = max(T2M_MAX),
       T2M = mean(T2M)
     ) %>%
     ungroup()

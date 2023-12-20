@@ -1,8 +1,7 @@
 source("./get_data_boundaries.R")
 
-years <- 1990:2020
-
-combined_data_1990_2020 <- bind_rows(lapply(years, get_yearly_data))
+combined_data_1990_2020 <- get_yearly_data("AUT")
+write.csv(combined_data_1990_2020, "Austria_combined_data_1990_2020.csv", row.names = FALSE)
 
 compare_distrib <- function(dataset, variable) {
   p <- ggplot(dataset, aes_string(x = "as.factor(YEAR)", y = variable, fill = "as.factor(YEAR)")) +

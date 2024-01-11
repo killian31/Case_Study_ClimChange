@@ -1,20 +1,25 @@
 library(progress)
+library(dplyr)
 
-files <- c('UKR', 'ESP', 'POL', 'PRT')
 data_UKR <- read.csv("data/temperature_daily_grid_UKR.csv", header = TRUE, sep = ",")
 data_ESP <- read.csv("data/temperature_daily_grid_ESP.csv", header = TRUE, sep = ",")
 data_POL <- read.csv("data/temperature_daily_grid_POL.csv", header = TRUE, sep = ",")
 data_PRT <- read.csv("data/temperature_daily_grid_PRT.csv", header = TRUE, sep = ",")
 
 # convert kelvin to celsius
-all_data <- list(data_ukr, data_esp, data_pol, data_prt)
-for (i in 1:length(all_data)) {
-  all_data[[i]]$temperature_mean <- all_data[[i]]$temperature_mean - 273.15
-  all_data[[i]]$temperature_min <- all_data[[i]]$temperature_min - 273.15
-  all_data[[i]]$temperature_max <- all_data[[i]]$temperature_max - 273.15
-}
+data_UKR <- data_UKR %>%
+  mutate_at(vars(-1:-3), ~. - 273.15)
 
-drawYearlyBoxplots <- function(data, temp_variable, file_name; country) {
+data_ESP <- data_ESP %>%
+  mutate_at(vars(-1:-3), ~. - 273.15)
+
+data_POL <- data_POL %>%
+  mutate_at(vars(-1:-3), ~. - 273.15)
+
+data_PRT <- data_PRT %>%
+  mutate_at(vars(-1:-3), ~. - 273.15)
+
+drawYearlyBoxplots <- function(data, temp_variable, file_name, country) {
   # Check if the temperature variable is valid
   if (!(temp_variable %in% c("temperature_mean", "temperature_min", "temperature_max"))) {
     stop("Invalid temperature variable. Choose from 'temperature_mean', 'temperature_min', 'temperature_max'.")
@@ -43,7 +48,6 @@ drawYearlyBoxplots <- function(data, temp_variable, file_name; country) {
   # Close the device
   dev.off()
 }
-
 
 
 calculateYearlyStatistics <- function(data, start_year, end_year, temp_variable) {
@@ -98,7 +102,7 @@ drawYearlyBoxplots(data_ESP, "temperature_max", "visualizations/ESP/boxplot_max_
 
 drawYearlyBoxplots(data_POL, "temperature_mean", "visualizations/POL/boxplot_mean_POL.jpg", "Poland")
 drawYearlyBoxplots(data_POL, "temperature_min", "visualizations/POL/boxplot_min_POL.jpg", "Poland")
-drawYearlyBoxplots(data_POL, "temperature_max", "visualizations/POL/boxplot_max_POL.jpg", "Poland"))
+drawYearlyBoxplots(data_POL, "temperature_max", "visualizations/POL/boxplot_max_POL.jpg", "Poland")
 
 drawYearlyBoxplots(data_PRT, "temperature_mean", "visualizations/PRT/boxplot_mean_PRT.jpg", "Portugal")
 drawYearlyBoxplots(data_PRT, "temperature_min", "visualizations/PRT/boxplot_min_PRT.jpg", "Portugal")

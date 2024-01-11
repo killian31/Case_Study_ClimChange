@@ -10,4 +10,4 @@ install.packages(c("shiny", "leaflet", "nasapower", "glue", "dplyr"))
 
 TO BE CONTINUED...
 
-![Example boxplot for mean temperature in Spain](visualizations/boxplot_mean_ESP.jpg)
+![Example boxplot for mean temperature in Spain](visualizations/ESP/boxplot_mean_ESP.jpg)

@@ -1,6 +1,10 @@
 library(progress)
 
-data = read.csv("data/temperature_daily_grid_UKR.csv", header = TRUE, sep = ",")
+files <- c('UKR', 'ESP', 'POL', 'PRT')
+data_ukr <- read.csv("data/temperature_daily_grid_UKR.csv", header = TRUE, sep = ",")
+data_esp = read.csv("data/temperature_daily_grid_ESP.csv", header = TRUE, sep = ",")
+data_pol = read.csv("data/temperature_daily_grid_POL.csv", header = TRUE, sep = ",")
+data_prt = read.csv("data/temperature_daily_grid_PRT.csv", header = TRUE, sep = ",")
 # show first temporal rows and last
 head(data)
 tail(data)
@@ -79,14 +83,49 @@ calculateYearlyStatistics <- function(data, start_year, end_year, temp_variable)
   return(results)
 }
 
-drawYearlyBoxplots(data, "temperature_mean", "boxplot_mean.jpg")
-drawYearlyBoxplots(data, "temperature_min", "boxplot_min.jpg")
-drawYearlyBoxplots(data, "temperature_max", "boxplot_max.jpg")
+drawYearlyBoxplots(data, "temperature_mean", "boxplot_mean_UKR.jpg")
+drawYearlyBoxplots(data, "temperature_min", "boxplot_min_UKR.jpg")
+drawYearlyBoxplots(data, "temperature_max", "boxplot_max_UKR.jpg")
 
-final_dataset_mean <- calculateYearlyStatistics(data, 1990, 2020, "temperature_mean")
-write.csv(final_dataset_mean, "aggregate_mean.csv", row.names=FALSE)
-final_dataset_min <- calculateYearlyStatistics(data, 1990, 2020, "temperature_min")
-write.csv(final_dataset_min, "aggregate_min.csv", row.names=FALSE)
-final_dataset_max <- calculateYearlyStatistics(data, 1990, 2020, "temperature_max")
-write.csv(final_dataset_max, "aggregate_max.csv", row.names=FALSE)
+drawYearlyBoxplots(data, "temperature_mean", "boxplot_mean_ESP.jpg")
+drawYearlyBoxplots(data, "temperature_min", "boxplot_min_ESP.jpg")
+drawYearlyBoxplots(data, "temperature_max", "boxplot_max_ESP.jpg")
+
+drawYearlyBoxplots(data, "temperature_mean", "boxplot_mean_POL.jpg")
+drawYearlyBoxplots(data, "temperature_min", "boxplot_min_POL.jpg")
+drawYearlyBoxplots(data, "temperature_max", "boxplot_max_POL.jpg")
+
+drawYearlyBoxplots(data, "temperature_mean", "boxplot_mean_PRT.jpg")
+drawYearlyBoxplots(data, "temperature_min", "boxplot_min_PRT.jpg")
+drawYearlyBoxplots(data, "temperature_max", "boxplot_max_PRT.jpg")
+
+final_dataset_mean <- calculateYearlyStatistics(data_UKR, 1990, 2020, "temperature_mean")
+write.csv(final_dataset_mean, "aggregate_mean_UKR.csv", row.names=FALSE)
+final_dataset_min <- calculateYearlyStatistics(data_UKR, 1990, 2020, "temperature_min")
+write.csv(final_dataset_min, "aggregate_min_UKR.csv", row.names=FALSE)
+final_dataset_max <- calculateYearlyStatistics(data_UKR, 1990, 2020, "temperature_max")
+write.csv(final_dataset_max, "aggregate_max_UKR.csv", row.names=FALSE)
+
+final_dataset_mean <- calculateYearlyStatistics(data_ESP, 1990, 2020, "temperature_mean")
+write.csv(final_dataset_mean, "aggregate_mean_ESP.csv", row.names=FALSE)
+final_dataset_min <- calculateYearlyStatistics(data_ESP, 1990, 2020, "temperature_min")
+write.csv(final_dataset_min, "aggregate_min_ESP.csv", row.names=FALSE)
+final_dataset_max <- calculateYearlyStatistics(data_ESP, 1990, 2020, "temperature_max")
+write.csv(final_dataset_max, "aggregate_max_ESP.csv", row.names=FALSE)
+
+final_dataset_mean <- calculateYearlyStatistics(data_POL, 1990, 2020, "temperature_mean")
+write.csv(final_dataset_mean, "aggregate_mean_POL.csv", row.names=FALSE)
+final_dataset_min <- calculateYearlyStatistics(data_POL, 1990, 2020, "temperature_min")
+write.csv(final_dataset_min, "aggregate_min_POL.csv", row.names=FALSE)
+final_dataset_max <- calculateYearlyStatistics(data_POL, 1990, 2020, "temperature_max")
+write.csv(final_dataset_max, "aggregate_max_POL.csv", row.names=FALSE)
+
+final_dataset_mean <- calculateYearlyStatistics(data_PRT, 1990, 2020, "temperature_mean")
+write.csv(final_dataset_mean, "aggregate_mean_PRT.csv", row.names=FALSE)
+final_dataset_min <- calculateYearlyStatistics(data_PRT, 1990, 2020, "temperature_min")
+write.csv(final_dataset_min, "aggregate_min_PRT.csv", row.names=FALSE)
+final_dataset_max <- calculateYearlyStatistics(data_PRT, 1990, 2020, "temperature_max")
+write.csv(final_dataset_max, "aggregate_max_PRT.csv", row.names=FALSE)
+
+
 

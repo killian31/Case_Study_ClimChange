@@ -10,4 +10,4 @@ install.packages(c("shiny", "leaflet", "nasapower", "glue", "dplyr"))
 
 TO BE CONTINUED...
 
-![](boxplot_mean.jpg)
+![](boxplot_mean_ESP.jpg)

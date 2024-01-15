@@ -23,7 +23,7 @@ library(RColorBrewer)
 # data_PRT <- data_PRT %>%
 #   mutate_at(vars(-1:-3), ~. - 273.15)
 
-plot_density_by_year <- function(data, variable, line_size = 0.3) {
+plot_density_by_year <- function(data, variable, country_name, line_size = 0.3) {
   # Ensure the date column is in Date format
   data$date <- as.Date(data$date)
   
@@ -42,13 +42,13 @@ plot_density_by_year <- function(data, variable, line_size = 0.3) {
   ggplot(data, aes(x = !!sym(variable), group = year, color = as.factor(year))) +
     geom_density(linewidth = line_size) +
     scale_color_manual(values = color_palette) +
-    labs(title = paste("Density of", variable, "by year (1990-2020)"),
+    labs(title = paste("Density of", variable, "in", country_name, "by year (1990-2020)"),
          x = variable,
          y = "Density") +
     theme_minimal()
 }
 
 # Example usage
-# plot_density_by_year(data_UKR, "temperature_mean")
-# plot_density_by_year(data_UKR, "temperature_min")
-# plot_density_by_year(data_UKR, "temperature_max")
+# plot_density_by_year(data_UKR, "temperature_mean", "Ukraine")
+# plot_density_by_year(data_UKR, "temperature_min", "Ukraine")
+# plot_density_by_year(data_UKR, "temperature_max", "Ukraine")

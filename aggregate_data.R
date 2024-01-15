@@ -1,23 +1,23 @@
 library(progress)
 library(dplyr)
 
-data_UKR <- read.csv("data/temperature_daily_grid_UKR.csv", header = TRUE, sep = ",")
-data_ESP <- read.csv("data/temperature_daily_grid_ESP.csv", header = TRUE, sep = ",")
-data_POL <- read.csv("data/temperature_daily_grid_POL.csv", header = TRUE, sep = ",")
-data_PRT <- read.csv("data/temperature_daily_grid_PRT.csv", header = TRUE, sep = ",")
+# Load data
+# data_UKR <- read.csv("data/temperature_daily_grid_UKR.csv", header = TRUE, sep = ",")
+# data_ESP <- read.csv("data/temperature_daily_grid_ESP.csv", header = TRUE, sep = ",")
+# data_POL <- read.csv("data/temperature_daily_grid_POL.csv", header = TRUE, sep = ",")
+# data_PRT <- read.csv("data/temperature_daily_grid_PRT.csv", header = TRUE, sep = ",")
 
+kelvin_to_celsius <- function(data) {
+  data <- data %>%
+    mutate_at(vars(-1:-3, ~, -273.15))
+  return(data)
+}
 # convert kelvin to celsius
-data_UKR <- data_UKR %>%
-  mutate_at(vars(-1:-3), ~. - 273.15)
+# data_UKR <- kelvin_to_celsius(data_UKR)
+# data_ESP <- kelvin_to_celsius(data_ESP)
+# data_POL <- kelvin_to_celsius(data_POL)
+# data_PRT <- kelvin_to_celsius(data_PRT)
 
-data_ESP <- data_ESP %>%
-  mutate_at(vars(-1:-3), ~. - 273.15)
-
-data_POL <- data_POL %>%
-  mutate_at(vars(-1:-3), ~. - 273.15)
-
-data_PRT <- data_PRT %>%
-  mutate_at(vars(-1:-3), ~. - 273.15)
 
 drawYearlyBoxplots <- function(data, temp_variable, file_name, country) {
   # Check if the temperature variable is valid
@@ -34,6 +34,9 @@ drawYearlyBoxplots <- function(data, temp_variable, file_name, country) {
   # Renaming the temperature column to a generic name for plotting
   names(data_for_plot)[names(data_for_plot) == temp_variable] <- "Temperature"
   
+  first_year <- min(data_for_plot$year)
+  median_first_year <- median(data_for_plot$Temperature[data_for_plot$year == first_year], na.rm = TRUE)
+  
   # Open a JPEG device
   jpeg(file_name, width = 1600, height = 900) # You can adjust the size as needed
   
@@ -44,7 +47,7 @@ drawYearlyBoxplots <- function(data, temp_variable, file_name, country) {
           las = 2, # Rotates x-axis labels
           col = rainbow(length(unique(data_for_plot$year))) # Optional: Adds color
   )
-  
+  abline(h = median_first_year, col = "red", lwd = 4)
   # Close the device
   dev.off()
 }
@@ -92,46 +95,48 @@ calculateYearlyStatistics <- function(data, start_year, end_year, temp_variable)
   return(results)
 }
 
-drawYearlyBoxplots(data_UKR, "temperature_mean", "visualizations/UKR/boxplot_mean_UKR.jpg", "Ukraine")
-drawYearlyBoxplots(data_UKR, "temperature_min", "visualizations/UKR/boxplot_min_UKR.jpg", "Ukraine")
-drawYearlyBoxplots(data_UKR, "temperature_max", "visualizations/UKR/boxplot_max_UKR.jpg", "Ukraine")
+# Example usages
+# drawYearlyBoxplots(data_UKR, "temperature_mean", "visualizations/UKR/boxplot_mean_UKR.jpg", "Ukraine")
+# drawYearlyBoxplots(data_UKR, "temperature_min", "visualizations/UKR/boxplot_min_UKR.jpg", "Ukraine")
+# drawYearlyBoxplots(data_UKR, "temperature_max", "visualizations/UKR/boxplot_max_UKR.jpg", "Ukraine")
+# 
+# drawYearlyBoxplots(data_ESP, "temperature_mean", "visualizations/ESP/boxplot_mean_ESP.jpg", "Spain")
+# drawYearlyBoxplots(data_ESP, "temperature_min", "visualizations/ESP/boxplot_min_ESP.jpg", "Spain")
+# drawYearlyBoxplots(data_ESP, "temperature_max", "visualizations/ESP/boxplot_max_ESP.jpg", "Spain")
+# 
+# drawYearlyBoxplots(data_POL, "temperature_mean", "visualizations/POL/boxplot_mean_POL.jpg", "Poland")
+# drawYearlyBoxplots(data_POL, "temperature_min", "visualizations/POL/boxplot_min_POL.jpg", "Poland")
+# drawYearlyBoxplots(data_POL, "temperature_max", "visualizations/POL/boxplot_max_POL.jpg", "Poland")
+# 
+# drawYearlyBoxplots(data_PRT, "temperature_mean", "visualizations/PRT/boxplot_mean_PRT.jpg", "Portugal")
+# drawYearlyBoxplots(data_PRT, "temperature_min", "visualizations/PRT/boxplot_min_PRT.jpg", "Portugal")
+# drawYearlyBoxplots(data_PRT, "temperature_max", "visualizations/PRT/boxplot_max_PRT.jpg", "Portugal")
 
-drawYearlyBoxplots(data_ESP, "temperature_mean", "visualizations/ESP/boxplot_mean_ESP.jpg", "Spain")
-drawYearlyBoxplots(data_ESP, "temperature_min", "visualizations/ESP/boxplot_min_ESP.jpg", "Spain")
-drawYearlyBoxplots(data_ESP, "temperature_max", "visualizations/ESP/boxplot_max_ESP.jpg", "Spain")
 
-drawYearlyBoxplots(data_POL, "temperature_mean", "visualizations/POL/boxplot_mean_POL.jpg", "Poland")
-drawYearlyBoxplots(data_POL, "temperature_min", "visualizations/POL/boxplot_min_POL.jpg", "Poland")
-drawYearlyBoxplots(data_POL, "temperature_max", "visualizations/POL/boxplot_max_POL.jpg", "Poland")
-
-drawYearlyBoxplots(data_PRT, "temperature_mean", "visualizations/PRT/boxplot_mean_PRT.jpg", "Portugal")
-drawYearlyBoxplots(data_PRT, "temperature_min", "visualizations/PRT/boxplot_min_PRT.jpg", "Portugal")
-drawYearlyBoxplots(data_PRT, "temperature_max", "visualizations/PRT/boxplot_max_PRT.jpg", "Portugal")
-
-final_dataset_mean_UKR <- calculateYearlyStatistics(data_UKR, 1990, 2020, "temperature_mean")
-write.csv(final_dataset_mean_UKR, "output_data/UKR/aggregate_mean_UKR.csv", row.names=FALSE)
-final_dataset_min_UKR <- calculateYearlyStatistics(data_UKR, 1990, 2020, "temperature_min")
-write.csv(final_dataset_min_UKR, "output_data/UKR/aggregate_min_UKR.csv", row.names=FALSE)
-final_dataset_max_UKR <- calculateYearlyStatistics(data_UKR, 1990, 2020, "temperature_max")
-write.csv(final_dataset_max_UKR, "output_data/UKR/aggregate_max_UKR.csv", row.names=FALSE)
-
-final_dataset_mean_ESP <- calculateYearlyStatistics(data_ESP, 1990, 2020, "temperature_mean")
-write.csv(final_dataset_mean_ESP, "output_data/ESP/aggregate_mean_ESP.csv", row.names=FALSE)
-final_dataset_min_ESP <- calculateYearlyStatistics(data_ESP, 1990, 2020, "temperature_min")
-write.csv(final_dataset_min_ESP, "output_data/ESP/aggregate_min_ESP.csv", row.names=FALSE)
-final_dataset_max_ESP <- calculateYearlyStatistics(data_ESP, 1990, 2020, "temperature_max")
-write.csv(final_dataset_max_ESP, "output_data/ESP/aggregate_max_ESP.csv", row.names=FALSE)
-
-final_dataset_mean_POL <- calculateYearlyStatistics(data_POL, 1990, 2020, "temperature_mean")
-write.csv(final_dataset_mean_POL, "output_data/POL/aggregate_mean_POL.csv", row.names=FALSE)
-final_dataset_min_POL <- calculateYearlyStatistics(data_POL, 1990, 2020, "temperature_min")
-write.csv(final_dataset_min_POL, "output_data/POL/aggregate_min_POL.csv", row.names=FALSE)
-final_dataset_max_POL <- calculateYearlyStatistics(data_POL, 1990, 2020, "temperature_max")
-write.csv(final_dataset_max_POL, "output_data/POL/aggregate_max_POL.csv", row.names=FALSE)
-
-final_dataset_mean_PRT <- calculateYearlyStatistics(data_PRT, 1990, 2020, "temperature_mean")
-write.csv(final_dataset_mean_PRT, "output_data/PRT/aggregate_mean_PRT.csv", row.names=FALSE)
-final_dataset_min_PRT <- calculateYearlyStatistics(data_PRT, 1990, 2020, "temperature_min")
-write.csv(final_dataset_min_PRT, "output_data/PRT/aggregate_min_PRT.csv", row.names=FALSE)
-final_dataset_max_PRT <- calculateYearlyStatistics(data_PRT, 1990, 2020, "temperature_max")
-write.csv(final_dataset_max_PRT, "output_data/PRT/aggregate_max_PRT.csv", row.names=FALSE)
+# final_dataset_mean_UKR <- calculateYearlyStatistics(data_UKR, 1990, 2020, "temperature_mean")
+# write.csv(final_dataset_mean_UKR, "output_data/UKR/aggregate_mean_UKR.csv", row.names=FALSE)
+# final_dataset_min_UKR <- calculateYearlyStatistics(data_UKR, 1990, 2020, "temperature_min")
+# write.csv(final_dataset_min_UKR, "output_data/UKR/aggregate_min_UKR.csv", row.names=FALSE)
+# final_dataset_max_UKR <- calculateYearlyStatistics(data_UKR, 1990, 2020, "temperature_max")
+# write.csv(final_dataset_max_UKR, "output_data/UKR/aggregate_max_UKR.csv", row.names=FALSE)
+# 
+# final_dataset_mean_ESP <- calculateYearlyStatistics(data_ESP, 1990, 2020, "temperature_mean")
+# write.csv(final_dataset_mean_ESP, "output_data/ESP/aggregate_mean_ESP.csv", row.names=FALSE)
+# final_dataset_min_ESP <- calculateYearlyStatistics(data_ESP, 1990, 2020, "temperature_min")
+# write.csv(final_dataset_min_ESP, "output_data/ESP/aggregate_min_ESP.csv", row.names=FALSE)
+# final_dataset_max_ESP <- calculateYearlyStatistics(data_ESP, 1990, 2020, "temperature_max")
+# write.csv(final_dataset_max_ESP, "output_data/ESP/aggregate_max_ESP.csv", row.names=FALSE)
+# 
+# final_dataset_mean_POL <- calculateYearlyStatistics(data_POL, 1990, 2020, "temperature_mean")
+# write.csv(final_dataset_mean_POL, "output_data/POL/aggregate_mean_POL.csv", row.names=FALSE)
+# final_dataset_min_POL <- calculateYearlyStatistics(data_POL, 1990, 2020, "temperature_min")
+# write.csv(final_dataset_min_POL, "output_data/POL/aggregate_min_POL.csv", row.names=FALSE)
+# final_dataset_max_POL <- calculateYearlyStatistics(data_POL, 1990, 2020, "temperature_max")
+# write.csv(final_dataset_max_POL, "output_data/POL/aggregate_max_POL.csv", row.names=FALSE)
+# 
+# final_dataset_mean_PRT <- calculateYearlyStatistics(data_PRT, 1990, 2020, "temperature_mean")
+# write.csv(final_dataset_mean_PRT, "output_data/PRT/aggregate_mean_PRT.csv", row.names=FALSE)
+# final_dataset_min_PRT <- calculateYearlyStatistics(data_PRT, 1990, 2020, "temperature_min")
+# write.csv(final_dataset_min_PRT, "output_data/PRT/aggregate_min_PRT.csv", row.names=FALSE)
+# final_dataset_max_PRT <- calculateYearlyStatistics(data_PRT, 1990, 2020, "temperature_max")
+# write.csv(final_dataset_max_PRT, "output_data/PRT/aggregate_max_PRT.csv", row.names=FALSE)

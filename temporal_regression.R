@@ -16,9 +16,9 @@
 # data_PRT_min <- read.csv("output_data/PRT/aggregate_min_PRT.csv", header = TRUE, sep = ",")
 # 
 # # UKR
-# data_UKR_max <- read.csv("output_data/UKR/aggregate_max_UKR.csv", header = TRUE, sep = ",")
-# data_UKR_mean <- read.csv("output_data/UKR/aggregate_mean_UKR.csv", header = TRUE, sep = ",")
-# data_UKR_min <- read.csv("output_data/UKR/aggregate_min_UKR.csv", header = TRUE, sep = ",")
+data_UKR_max <- read.csv("output_data/UKR/aggregate_max_UKR.csv", header = TRUE, sep = ",")
+data_UKR_mean <- read.csv("output_data/UKR/aggregate_mean_UKR.csv", header = TRUE, sep = ",")
+data_UKR_min <- read.csv("output_data/UKR/aggregate_min_UKR.csv", header = TRUE, sep = ",")
 
 # We create the plot_temporal_regression function
 plot_temporal_regression <- function(data_min, data_mean, data_max, years, title) {
@@ -29,15 +29,17 @@ plot_temporal_regression <- function(data_min, data_mean, data_max, years, title
   reg3 <- lm(data_max ~ years)
   
   # We plot the regressions
-  plot(years, data_min, type = "n", xlab = "Years", 
+  plot(years, data_min, xlab = "Years", col = "cyan3",
        ylab = "Temparatures (in °C)", main = title, ylim = c(min(predict(reg1), 
       predict(reg2), predict(reg3))-5, max(predict(reg1), predict(reg2), predict(reg3))+5))
-  
+  points(years, data_mean, col = "gold")
+  points(years, data_max, col = "deeppink3")
   abline(reg1, col = "cyan3", lwd = 2)
   abline(reg2, col = "gold", lwd = 2)
   abline(reg3, col = "deeppink3", lwd = 2)
   
-  legend("topleft", legend = c("MIN", "MEAN", "MAX"), col = c("cyan3", "gold", "deeppink3"), lwd = 2, cex = 0.6)}
+  legend("topleft", legend = c("MIN", "MEAN", "MAX"), col = c("cyan3", "gold", "deeppink3"), lwd = 2, cex = 0.6)
+}
 
 
 # We test the function

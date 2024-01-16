@@ -7,11 +7,6 @@ library(dplyr)
 # data_POL <- read.csv("data/temperature_daily_grid_POL.csv", header = TRUE, sep = ",")
 # data_PRT <- read.csv("data/temperature_daily_grid_PRT.csv", header = TRUE, sep = ",")
 
-kelvin_to_celsius <- function(data) {
-  data <- data %>%
-    mutate_at(vars(-1:-3, ~, -273.15))
-  return(data)
-}
 # convert kelvin to celsius
 # data_UKR <- kelvin_to_celsius(data_UKR)
 # data_ESP <- kelvin_to_celsius(data_ESP)

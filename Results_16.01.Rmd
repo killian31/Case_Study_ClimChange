@@ -91,19 +91,19 @@ These plots shows the temperature densities for each year, each variable and eac
 
 ##### Min
 
-```{r density_histogram_ukr_min, echo=FALSE}
+```{r density_histogram_ukr_min, echo=FALSE, fig.width=12, fig.height=8, fig.align='center'}
 plot_density_by_year(data_UKR, "temperature_min", "Ukraine")
 ```
 
 ##### Max
 
-```{r density_histogram_ukr_max, echo=FALSE}
+```{r density_histogram_ukr_max, echo=FALSE, fig.width=12, fig.height=8, fig.align='center'}
 plot_density_by_year(data_UKR, "temperature_max", "Ukraine")
 ```
 
 ##### Mean
 
-```{r density_histogram_ukr_mean, echo=FALSE}
+```{r density_histogram_ukr_mean, echo=FALSE, fig.width=12, fig.height=8, fig.align='center'}
 plot_density_by_year(data_UKR, "temperature_mean", "Ukraine")
 ```
 
@@ -111,19 +111,19 @@ plot_density_by_year(data_UKR, "temperature_mean", "Ukraine")
 
 ##### Min
 
-```{r density_histogram_esp_min, echo=FALSE}
+```{r density_histogram_esp_min, echo=FALSE, fig.width=12, fig.height=8, fig.align='center'}
 plot_density_by_year(data_ESP, "temperature_min", "Spain")
 ```
 
 ##### Max
 
-```{r density_histogram_esp_max, echo=FALSE}
+```{r density_histogram_esp_max, echo=FALSE, fig.width=12, fig.height=8, fig.align='center'}
 plot_density_by_year(data_ESP, "temperature_max", "Spain")
 ```
 
 ##### Mean
 
-```{r density_histogram_esp_mean, echo=FALSE}
+```{r density_histogram_esp_mean, echo=FALSE, fig.width=12, fig.height=8, fig.align='center'}
 plot_density_by_year(data_ESP, "temperature_mean", "Spain")
 ```
 
@@ -131,19 +131,19 @@ plot_density_by_year(data_ESP, "temperature_mean", "Spain")
 
 ##### Min
 
-```{r density_histogram_pol_min, echo=FALSE}
+```{r density_histogram_pol_min, echo=FALSE, fig.width=12, fig.height=8, fig.align='center'}
 plot_density_by_year(data_POL, "temperature_min", "Poland")
 ```
 
 ##### Max
 
-```{r density_histogram_pol_max, echo=FALSE}
+```{r density_histogram_pol_max, echo=FALSE, fig.width=12, fig.height=8, fig.align='center'}
 plot_density_by_year(data_POL, "temperature_max", "Poland")
 ```
 
 ##### Mean
 
-```{r density_histogram_pol_mean, echo=FALSE}
+```{r density_histogram_pol_mean, echo=FALSE, fig.width=12, fig.height=8, fig.align='center'}
 plot_density_by_year(data_POL, "temperature_mean", "Poland")
 ```
 
@@ -151,25 +151,85 @@ plot_density_by_year(data_POL, "temperature_mean", "Poland")
 
 ##### Min
 
-```{r density_histogram_prt_min, echo=FALSE}
+```{r density_histogram_prt_min, echo=FALSE, fig.width=12, fig.height=8, fig.align='center'}
 plot_density_by_year(data_PRT, "temperature_min", "Portugal")
 ```
 
 ##### Max
 
-```{r density_histogram_prt_max, echo=FALSE}
+```{r density_histogram_prt_max, echo=FALSE, fig.width=12, fig.height=8, fig.align='center'}
 plot_density_by_year(data_PRT, "temperature_max", "Portugal")
 ```
 
 ##### Mean
 
-```{r density_histogram_prt_mean, echo=FALSE}
+```{r density_histogram_prt_mean, echo=FALSE, fig.width=12, fig.height=8, fig.align='center'}
 plot_density_by_year(data_PRT, "temperature_mean", "Portugal")
 ```
 
 ### Linear regression
 
-ToDo
+These plots shows the linear regression of the temperature variables (min, max, mean) for each country over the years.
+
+#### Ukraine
+
+```{r linear_regression_ukr, echo=FALSE, fig.width=12, fig.height=8, fig.align='center'}
+source("temporal_regression.R")
+data_UKR_max <- read.csv("output_data/UKR/aggregate_max_UKR.csv", header = TRUE, sep = ",")
+data_UKR_mean <- read.csv("output_data/UKR/aggregate_mean_UKR.csv", header = TRUE, sep = ",")
+data_UKR_min <- read.csv("output_data/UKR/aggregate_min_UKR.csv", header = TRUE, sep = ",")
+
+plot_temporal_regression(
+  data_UKR_min$Median,
+  data_UKR_mean$Median, 
+  data_UKR_max$Median, 
+  data_UKR_max$Year, 
+  'Ukraine')
+```
+
+#### Spain
+
+```{r linear_regression_esp, echo=FALSE, fig.width=12, fig.height=8, fig.align='center'}
+data_ESP_max <- read.csv("output_data/ESP/aggregate_max_ESP.csv", header = TRUE, sep = ",")
+data_ESP_mean <- read.csv("output_data/ESP/aggregate_mean_ESP.csv", header = TRUE, sep = ",")
+data_ESP_min <- read.csv("output_data/ESP/aggregate_min_ESP.csv", header = TRUE, sep = ",")
+
+plot_temporal_regression(
+  data_ESP_min$Median, 
+  data_ESP_mean$Median, 
+  data_ESP_max$Median, 
+  data_ESP_max$Year, 
+  'Spain')
+```
+
+#### Poland
+
+```{r linear_regression_pol, echo=FALSE, fig.width=12, fig.height=8, fig.align='center'}
+data_POL_max <- read.csv("output_data/POL/aggregate_max_POL.csv", header = TRUE, sep = ",")
+data_POL_mean <- read.csv("output_data/POL/aggregate_mean_POL.csv", header = TRUE, sep = ",")
+data_POL_min <- read.csv("output_data/POL/aggregate_min_POL.csv", header = TRUE, sep = ",")
+
+plot_temporal_regression(
+  data_POL_min$Median, 
+  data_POL_mean$Median, 
+  data_POL_max$Median, 
+  data_POL_max$Year, 
+  'Poland')
+```
+
+#### Portugal
+
+```{r linear_regression_prt, echo=FALSE, fig.width=12, fig.height=8, fig.align='center'}
+data_PRT_max <- read.csv("output_data/PRT/aggregate_max_PRT.csv", header = TRUE, sep = ",")
+data_PRT_mean <- read.csv("output_data/PRT/aggregate_mean_PRT.csv", header = TRUE, sep = ",")
+data_PRT_min <- read.csv("output_data/PRT/aggregate_min_PRT.csv", header = TRUE, sep = ",")
+plot_temporal_regression(
+  data_PRT_min$Median, 
+  data_PRT_mean$Median, 
+  data_PRT_max$Median, 
+  data_PRT_max$Year, 
+  'Portugal')
+```
 
 ## Migration Analysis
 

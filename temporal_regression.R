@@ -29,17 +29,18 @@ plot_temporal_regression <- function(data_min, data_mean, data_max, years, title
   reg3 <- lm(data_max ~ years)
   
   # We plot the regressions
-  plot(years, data_min, xlab = "Years", col = "cyan3",
+  plot(years, data_min, col = "cyan3", xlab = "Years", 
        ylab = "Temparatures (in °C)", main = title, ylim = c(min(predict(reg1), 
       predict(reg2), predict(reg3))-5, max(predict(reg1), predict(reg2), predict(reg3))+5))
   points(years, data_mean, col = "gold")
-  points(years, data_max, col = "deeppink3")
+  points(years, data_max, col = "deeppink3") 
   abline(reg1, col = "cyan3", lwd = 2)
   abline(reg2, col = "gold", lwd = 2)
   abline(reg3, col = "deeppink3", lwd = 2)
   
   legend("topleft", legend = c("MIN", "MEAN", "MAX"), col = c("cyan3", "gold", "deeppink3"), lwd = 2, cex = 0.6)
 }
+
 
 
 # We test the function
@@ -55,3 +56,50 @@ plot_temporal_regression <- function(data_min, data_mean, data_max, years, title
 # plot_temporal_regression(
 #   data_UKR_min$Median, data_UKR_mean$Median, data_UKR_max$Median, data_UKR_max$Year, 'Ukraine')
 
+plot_temporal_regression_q <- function(data_q05, data_q95, years, title) {
+  
+  # We regress the data
+  reg1 <- lm(data_q05 ~ years)
+  reg2 <- lm(data_q95 ~ years)
+
+  
+  # We plot the regressions
+  plot(years, data_q05, type = 'n', xlab = "Years", 
+       ylab = "Temparatures (in °C)", main = title, ylim = c(min(predict(reg1))-5, max(predict(reg2))+5))
+  abline(reg1, col = "cyan3", lwd = 2)
+  abline(reg2, col = "red", lwd = 2)
+  pred1 <- predict(reg1)
+  pred2 <- predict(reg2)
+  #polygon(c(years, rev(years)), c(pred1, rev(pred2)), col = rgb(0, 0, 0, alpha = 50, maxColorValue = 255), border = NA)
+  polygon(c(years, rev(years)), c(pred1, rev(pred2)), col = rgb(0, 0, 0, alpha = 50, maxColorValue = 255), border = NA)
+  
+  
+  legend("topleft", legend = c("quantile 0.05", "quantile 0.95"), col = c("cyan3", "red"), lwd = 2, cex = 0.6)
+}
+# OUI JAURAIS DU FAIRE UNE FONCTION !!!!
+plot_temporal_regression_q(
+  data_UKR_min$Quantile_0.05, data_UKR_min$Quantile_0.95, data_UKR_min$Year, 'Min Ukraine')
+plot_temporal_regression_q(
+  data_UKR_mean$Quantile_0.05, data_UKR_mean$Quantile_0.95, data_UKR_min$Year, 'Mean Ukraine')
+plot_temporal_regression_q(
+  data_UKR_max$Quantile_0.05, data_UKR_max$Quantile_0.95, data_UKR_min$Year, 'Max Ukraine')
+plot_temporal_regression_q(
+  data_ESP_min$Quantile_0.05, data_ESP_min$Quantile_0.95, data_ESP_min$Year, 'Min Spain')
+plot_temporal_regression_q(
+  data_ESP_mean$Quantile_0.05, data_ESP_mean$Quantile_0.95, data_ESP_min$Year, 'Mean Spain')
+plot_temporal_regression_q(
+  data_ESP_max$Quantile_0.05, data_ESP_max$Quantile_0.95, data_ESP_min$Year, 'Max Spain')
+plot_temporal_regression_q(
+  data_PRT_min$Quantile_0.05, data_PRT_min$Quantile_0.95, data_UKR_min$Year, 'Min Portugal')
+plot_temporal_regression_q(
+  data_PRT_mean$Quantile_0.05, data_PRT_mean$Quantile_0.95, data_UKR_min$Year, 'Mean Portugal')
+plot_temporal_regression_q(
+  data_PRT_max$Quantile_0.05, data_PRT_max$Quantile_0.95, data_UKR_min$Year, 'Max Portugal')
+plot_temporal_regression_q(
+  data_POL_min$Quantile_0.05, data_POL_min$Quantile_0.95, data_ESP_min$Year, 'Min Poland')
+plot_temporal_regression_q(
+  data_POL_mean$Quantile_0.05, data_POL_mean$Quantile_0.95, data_ESP_min$Year, 'Mean Poland')
+plot_temporal_regression_q(
+  data_POL_max$Quantile_0.05, data_POL_max$Quantile_0.95, data_ESP_min$Year, 'Max Poland')
+
+# DEMAIN : ajouter les coefficients + t-test

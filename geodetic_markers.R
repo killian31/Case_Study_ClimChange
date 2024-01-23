@@ -1,8 +1,8 @@
 # Load data
-data_UKR <- read.csv("data/temperature_daily_grid_UKR.csv", header = TRUE, sep = ",")
-data_ESP <- read.csv("data/temperature_daily_grid_ESP.csv", header = TRUE, sep = ",")
-data_POL <- read.csv("data/temperature_daily_grid_POL.csv", header = TRUE, sep = ",")
-data_PRT <- read.csv("data/temperature_daily_grid_PRT.csv", header = TRUE, sep = ",")
+# data_UKR <- read.csv("data/temperature_daily_grid_UKR.csv", header = TRUE, sep = ",")
+# data_ESP <- read.csv("data/temperature_daily_grid_ESP.csv", header = TRUE, sep = ",")
+# data_POL <- read.csv("data/temperature_daily_grid_POL.csv", header = TRUE, sep = ",")
+# data_PRT <- read.csv("data/temperature_daily_grid_PRT.csv", header = TRUE, sep = ",")
 
 # Charger la bibliothèque leaflet
 library(leaflet)
@@ -69,8 +69,8 @@ map_UKR <- function(data_UKR) {
   print(carte_UKR)
 }
 
-filter_data_UKR <- filter_data_UKR(data_UKR)
-map_UKR <- map_UKR(data_UKR)
+# filter_data_UKR <- filter_data_UKR(data_UKR)
+# map_UKR <- map_UKR(data_UKR)
 
 #### Espagne ####
 
@@ -120,9 +120,9 @@ map_ESP <- function(data_ESP) {
   
   print(carte_ESP)
 }
-
-filter_data_ESP <- filter_data_ESP(data_ESP)
-map_ESP <- map_UKR(data_ESP)
+ 
+# filter_data_ESP <- filter_data_ESP(data_ESP)
+# map_ESP <- map_UKR(data_ESP)
 
 #### Pologne ####
 
@@ -174,8 +174,8 @@ map_POL <- function(data_POL) {
   print(carte_POL)
 }
 
-filter_data_POL <- filter_data_POL(data_POL)
-map_POL <- map_POL(data_POL)
+# filter_data_POL <- filter_data_POL(data_POL)
+# map_POL <- map_POL(data_POL)
 
 #### Portugal ####
 
@@ -219,5 +219,5 @@ map_PRT <- function(data_PRT) {
   print(carte_PRT)
 }
 
-filter_data_PRT <- filter_data_PRT(data_PRT)
-map_PRT <- map_PRT(data_PRT)
+# filter_data_PRT <- filter_data_PRT(data_PRT)
+# map_PRT <- map_PRT(data_PRT)

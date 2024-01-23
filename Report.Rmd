@@ -1,0 +1,243 @@
+---
+title: "Results on Tuesday 23rd"
+author: "Théo Druilhe, Pierre Larose, Sigurd Saue and Killian Steunou"
+date: "`r format(Sys.Date(), '%d %B, %Y')`"
+output:
+   beamer_presentation:
+      fig_caption: true
+      number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source("kernel_barchart.R")
+source("aggregate_data.R")
+library(jpeg)
+library(grid)
+library(ggplot2)
+library(dplyr)
+
+# Load the data
+data_UKR <- read.csv("data/temperature_daily_grid_UKR.csv", header = TRUE, sep = ",")
+data_ESP <- read.csv("data/temperature_daily_grid_ESP.csv", header = TRUE, sep = ",")
+data_POL <- read.csv("data/temperature_daily_grid_POL.csv", header = TRUE, sep = ",")
+data_PRT <- read.csv("data/temperature_daily_grid_PRT.csv", header = TRUE, sep = ",")
+
+# Convert kelvin to Celsius
+data_UKR <- data_UKR %>%
+  mutate_at(vars(-1:-3), ~. - 273.15)
+
+data_ESP <- data_ESP %>%
+  mutate_at(vars(-1:-3), ~. - 273.15)
+
+data_POL <- data_POL %>%
+  mutate_at(vars(-1:-3), ~. - 273.15)
+
+data_PRT <- data_PRT %>%
+  mutate_at(vars(-1:-3), ~. - 273.15)
+```
+
+
+# Introduction
+
+This report presents the latest results of our work on the project. We will 
+present the results of our analysis on the data we have been given, mostly through visualizations.
+
+\tableofcontents
+\newpage
+
+# Geospatial Data Analysis
+
+ToDo: include Theo's work on analyzing specific geographic points.
+
+---
+
+# Density Histograms
+
+These plots shows the temperature densities for each year, each variable and each country.
+
+---
+
+<!-- Ukraine, Min -->
+
+```{r density_histogram_ukr_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_UKR, "temperature_min", "Ukraine")
+```
+
+---
+
+<!-- Max -->
+
+```{r density_histogram_ukr_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_UKR, "temperature_max", "Ukraine")
+```
+
+---
+
+<!-- Mean -->
+
+```{r density_histogram_ukr_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_UKR, "temperature_mean", "Ukraine")
+```
+
+---
+
+<!-- Spain, Min -->
+
+```{r density_histogram_esp_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_ESP, "temperature_min", "Spain")
+```
+
+---
+
+<!-- Max -->
+
+```{r density_histogram_esp_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_ESP, "temperature_max", "Spain")
+```
+
+---
+
+<!-- Mean -->
+
+```{r density_histogram_esp_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_ESP, "temperature_mean", "Spain")
+```
+
+---
+
+<!-- Poland, Min -->
+
+```{r density_histogram_pol_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_POL, "temperature_min", "Poland")
+```
+
+---
+
+<!-- Max -->
+
+```{r density_histogram_pol_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_POL, "temperature_max", "Poland")
+```
+
+---
+
+<!-- Mean -->
+
+```{r density_histogram_pol_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_POL, "temperature_mean", "Poland")
+```
+
+---
+
+<!-- Portugal, Min -->
+
+```{r density_histogram_prt_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_PRT, "temperature_min", "Portugal")
+```
+
+---
+
+<!-- Max -->
+
+```{r density_histogram_prt_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_PRT, "temperature_max", "Portugal")
+```
+
+---
+
+<!-- Mean -->
+
+```{r density_histogram_prt_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_PRT, "temperature_mean", "Portugal")
+```
+
+# Linear regression
+
+These plots shows the linear regression of the temperature variables (min, max, mean) for each country over the years.
+
+---
+
+<!-- ### Ukraine -->
+
+```{r linear_regression_ukr, echo=FALSE, fig.align='center', out.width='100%'}
+source("temporal_regression.R")
+data_UKR_max <- read.csv("output_data/UKR/aggregate_max_UKR.csv", header = TRUE, sep = ",")
+data_UKR_mean <- read.csv("output_data/UKR/aggregate_mean_UKR.csv", header = TRUE, sep = ",")
+data_UKR_min <- read.csv("output_data/UKR/aggregate_min_UKR.csv", header = TRUE, sep = ",")
+
+plot_temporal_regression(
+  data_UKR_min$Median,
+  data_UKR_mean$Median, 
+  data_UKR_max$Median, 
+  data_UKR_max$Year, 
+  'Ukraine')
+```
+
+---
+
+<!-- ### Spain -->
+
+```{r linear_regression_esp, echo=FALSE, fig.align='center', out.width='100%'}
+data_ESP_max <- read.csv("output_data/ESP/aggregate_max_ESP.csv", header = TRUE, sep = ",")
+data_ESP_mean <- read.csv("output_data/ESP/aggregate_mean_ESP.csv", header = TRUE, sep = ",")
+data_ESP_min <- read.csv("output_data/ESP/aggregate_min_ESP.csv", header = TRUE, sep = ",")
+
+plot_temporal_regression(
+  data_ESP_min$Median, 
+  data_ESP_mean$Median, 
+  data_ESP_max$Median, 
+  data_ESP_max$Year, 
+  'Spain')
+```
+
+---
+
+<!-- ### Poland -->
+
+```{r linear_regression_pol, echo=FALSE, fig.align='center', out.width='100%'}
+data_POL_max <- read.csv("output_data/POL/aggregate_max_POL.csv", header = TRUE, sep = ",")
+data_POL_mean <- read.csv("output_data/POL/aggregate_mean_POL.csv", header = TRUE, sep = ",")
+data_POL_min <- read.csv("output_data/POL/aggregate_min_POL.csv", header = TRUE, sep = ",")
+
+plot_temporal_regression(
+  data_POL_min$Median, 
+  data_POL_mean$Median, 
+  data_POL_max$Median, 
+  data_POL_max$Year, 
+  'Poland')
+```
+
+---
+
+<!-- ### Portugal -->
+
+```{r linear_regression_prt, echo=FALSE, fig.align='center', out.width='100%'}
+data_PRT_max <- read.csv("output_data/PRT/aggregate_max_PRT.csv", header = TRUE, sep = ",")
+data_PRT_mean <- read.csv("output_data/PRT/aggregate_mean_PRT.csv", header = TRUE, sep = ",")
+data_PRT_min <- read.csv("output_data/PRT/aggregate_min_PRT.csv", header = TRUE, sep = ",")
+plot_temporal_regression(
+  data_PRT_min$Median, 
+  data_PRT_mean$Median, 
+  data_PRT_max$Median, 
+  data_PRT_max$Year, 
+  'Portugal')
+```
+
+# Migration Analysis
+
+ToDo
+
+## Variable selection
+
+ToDo
+
+## Model Development
+
+ToDo
+
+# Literature Review
+
+ToDo
+
+# Conclusion

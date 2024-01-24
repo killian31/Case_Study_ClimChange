@@ -44,11 +44,6 @@ This report presents the latest results of our work on the project. We will
 present the results of our analysis on the data we have been given, mostly through visualizations.
 
 \tableofcontents
-\newpage
-
-# Geospatial Data Analysis
-
-ToDo: include Theo's work on analyzing specific geographic points.
 
 ---
 
@@ -56,6 +51,8 @@ ToDo: include Theo's work on analyzing specific geographic points.
 
 These plots shows the temperature densities for each year, each variable and each country.
 We will first look at the whole country, and then we will look at particular points.
+
+---
 
 ## Country level
 
@@ -172,8 +169,6 @@ filtered_data_PRT <- filter_data_PRT(data_PRT)
 ```
 
 ---
-
-<!-- Ukraine -->
 
 ### Ukraine
 
@@ -477,13 +472,16 @@ plot_3d_density_by_year(filtered_data_PRT$data_PRT_south, "temperature_max", "Po
 plot_3d_density_by_year(filtered_data_PRT$data_PRT_south, "temperature_mean", "Portugal - South")
 ```
 
+---
+
 # Linear regression
+## Min, max, mean temperature
 
 These plots shows the linear regression of the temperature variables (min, max, mean) for each country over the years.
 
 ---
 
-<!-- ### Ukraine -->
+### Ukraine
 
 ```{r linear_regression_ukr, echo=FALSE, fig.align='center', out.width='100%'}
 source("temporal_regression.R")
@@ -501,7 +499,7 @@ plot_temporal_regression(
 
 ---
 
-<!-- ### Spain -->
+### Spain
 
 ```{r linear_regression_esp, echo=FALSE, fig.align='center', out.width='100%'}
 data_ESP_max <- read.csv("output_data/ESP/aggregate_max_ESP.csv", header = TRUE, sep = ",")
@@ -518,7 +516,7 @@ plot_temporal_regression(
 
 ---
 
-<!-- ### Poland -->
+### Poland
 
 ```{r linear_regression_pol, echo=FALSE, fig.align='center', out.width='100%'}
 data_POL_max <- read.csv("output_data/POL/aggregate_max_POL.csv", header = TRUE, sep = ",")
@@ -535,7 +533,7 @@ plot_temporal_regression(
 
 ---
 
-<!-- ### Portugal -->
+### Portugal
 
 ```{r linear_regression_prt, echo=FALSE, fig.align='center', out.width='100%'}
 data_PRT_max <- read.csv("output_data/PRT/aggregate_max_PRT.csv", header = TRUE, sep = ",")
@@ -548,6 +546,168 @@ plot_temporal_regression(
   data_PRT_max$Year, 
   'Portugal')
 ```
+
+--- 
+
+## Extreme quantiles
+
+The following plots show the linear regression of the temperature quantiles 0.05 and 0.95.
+
+--- 
+
+### Ukraine
+#### Minimum
+
+```{r linear_regression_ukr_quantiles_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  data_UKR_min$Quantile_0.05, 
+  data_UKR_min$Quantile_0.95, 
+  data_UKR_min$Year, 
+  'Ukraine')
+```
+
+---
+
+### Ukraine
+#### Maximum
+
+```{r linear_regression_ukr_quantiles_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  data_UKR_max$Quantile_0.05, 
+  data_UKR_max$Quantile_0.95, 
+  data_UKR_max$Year, 
+  'Ukraine')
+```
+
+---
+
+### Ukraine
+#### Mean
+
+```{r linear_regression_ukr_quantiles_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  data_UKR_mean$Quantile_0.05, 
+  data_UKR_mean$Quantile_0.95, 
+  data_UKR_mean$Year, 
+  'Ukraine')
+```
+
+### Spain
+#### Minimum
+
+```{r linear_regression_esp_quantiles_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  data_ESP_min$Quantile_0.05, 
+  data_ESP_min$Quantile_0.95, 
+  data_ESP_min$Year, 
+  'Spain')
+```
+
+---
+
+### Spain
+#### Maximum
+
+```{r linear_regression_esp_quantiles_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  data_ESP_max$Quantile_0.05, 
+  data_ESP_max$Quantile_0.95, 
+  data_ESP_max$Year, 
+  'Spain')
+```
+
+---
+
+### Spain
+#### Mean
+
+```{r linear_regression_esp_quantiles_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  data_ESP_mean$Quantile_0.05, 
+  data_ESP_mean$Quantile_0.95, 
+  data_ESP_mean$Year, 
+  'Spain')
+```
+
+---
+
+### Poland
+#### Minimum
+
+```{r linear_regression_pol_quantiles_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  data_POL_min$Quantile_0.05, 
+  data_POL_min$Quantile_0.95, 
+  data_POL_min$Year, 
+  'Poland')
+```
+
+---
+
+### Poland
+#### Maximum
+
+```{r linear_regression_pol_quantiles_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  data_POL_max$Quantile_0.05, 
+  data_POL_max$Quantile_0.95, 
+  data_POL_max$Year, 
+  'Poland')
+```
+
+---
+
+### Poland
+#### Mean
+
+```{r linear_regression_pol_quantiles_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  data_POL_mean$Quantile_0.05, 
+  data_POL_mean$Quantile_0.95, 
+  data_POL_mean$Year, 
+  'Poland')
+```
+
+---
+
+### Portugal
+#### Minimum
+
+```{r linear_regression_prt_quantiles_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  data_PRT_min$Quantile_0.05, 
+  data_PRT_min$Quantile_0.95, 
+  data_PRT_min$Year, 
+  'Portugal')
+```
+
+---
+
+### Portugal
+#### Maximum
+
+```{r linear_regression_prt_quantiles_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  data_PRT_max$Quantile_0.05, 
+  data_PRT_max$Quantile_0.95, 
+  data_PRT_max$Year, 
+  'Portugal')
+```
+
+---
+
+### Portugal
+#### Mean
+
+```{r linear_regression_prt_quantiles_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  data_PRT_mean$Quantile_0.05, 
+  data_PRT_mean$Quantile_0.95, 
+  data_PRT_mean$Year, 
+  'Portugal')
+```
+
+---
 
 # Migration Analysis
 

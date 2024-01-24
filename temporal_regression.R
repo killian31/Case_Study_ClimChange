@@ -18,9 +18,9 @@
 # data_PRT_min <- read.csv("output_data/PRT/aggregate_min_PRT.csv", header = TRUE, sep = ",")
 # 
 # # UKR
-#data_UKR_max <- read.csv("output_data/UKR/aggregate_max_UKR.csv", header = TRUE, sep = ",")
-#data_UKR_mean <- read.csv("output_data/UKR/aggregate_mean_UKR.csv", header = TRUE, sep = ",")
-#data_UKR_min <- read.csv("output_data/UKR/aggregate_min_UKR.csv", header = TRUE, sep = ",")
+# data_UKR_max <- read.csv("output_data/UKR/aggregate_max_UKR.csv", header = TRUE, sep = ",")
+# data_UKR_mean <- read.csv("output_data/UKR/aggregate_mean_UKR.csv", header = TRUE, sep = ",")
+# data_UKR_min <- read.csv("output_data/UKR/aggregate_min_UKR.csv", header = TRUE, sep = ",")
 
 # We create a function which permit to plot a regression of the min, mean and max on one graph
 plot_temporal_regression <- function(data_min, data_mean, data_max, years, title, show_stat = TRUE) {
@@ -107,8 +107,8 @@ plot_temporal_regression_q <- function(data_q05, data_q95, years, title, show_st
 }
 
 # We execute the function for the min, mean and max of all the countries (with q0.05 and q0.95)
-plot_temporal_regression_q(
-  data_UKR_min$Quantile_0.05, data_UKR_min$Quantile_0.95, data_UKR_min$Year, 'Min Ukraine')
+# plot_temporal_regression_q(
+#    data_UKR_min$Quantile_0.05, data_UKR_min$Quantile_0.95, data_UKR_min$Year, 'Min Ukraine')
 # plot_temporal_regression_q(
 #   data_UKR_mean$Quantile_0.05, data_UKR_mean$Quantile_0.95, data_UKR_min$Year, 'Mean Ukraine')
 # plot_temporal_regression_q(

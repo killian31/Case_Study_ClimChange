@@ -1,5 +1,7 @@
 # Load data
 
+# We have the Max, the Mean and the Min for SPAIN, POLAND, PORTUGAL and UKRAINE 
+
 # ESP
 # data_ESP_max <- read.csv("output_data/ESP/aggregate_max_ESP.csv", header = TRUE, sep = ",")
 # data_ESP_mean <- read.csv("output_data/ESP/aggregate_mean_ESP.csv", header = TRUE, sep = ",")
@@ -16,45 +18,51 @@
 # data_PRT_min <- read.csv("output_data/PRT/aggregate_min_PRT.csv", header = TRUE, sep = ",")
 # 
 # # UKR
-data_UKR_max <- read.csv("output_data/UKR/aggregate_max_UKR.csv", header = TRUE, sep = ",")
-data_UKR_mean <- read.csv("output_data/UKR/aggregate_mean_UKR.csv", header = TRUE, sep = ",")
-data_UKR_min <- read.csv("output_data/UKR/aggregate_min_UKR.csv", header = TRUE, sep = ",")
+#data_UKR_max <- read.csv("output_data/UKR/aggregate_max_UKR.csv", header = TRUE, sep = ",")
+#data_UKR_mean <- read.csv("output_data/UKR/aggregate_mean_UKR.csv", header = TRUE, sep = ",")
+#data_UKR_min <- read.csv("output_data/UKR/aggregate_min_UKR.csv", header = TRUE, sep = ",")
 
-# We create the plot_temporal_regression function
+# We create a function which permit to plot a regression of the min, mean and max on one graph
 plot_temporal_regression <- function(data_min, data_mean, data_max, years, title, show_stat = TRUE) {
   
-  # We regress the data
+  # We regress the temperatures on the years
   reg1 <- lm(data_min ~ years)
   reg2 <- lm(data_mean ~ years)
   reg3 <- lm(data_max ~ years)
   
   # We plot the regressions and the raw data
+  
+  # Raw data
   plot(years, data_min, col = "cyan3", xlab = "Years", 
        ylab = "Temparatures (in °C)", main = title, ylim = c(min(predict(reg1), 
       predict(reg2), predict(reg3))-5, max(predict(reg1), predict(reg2), predict(reg3))+5))
   points(years, data_mean, col = "gold")
   points(years, data_max, col = "deeppink3") 
+  
+  # Regressions
   abline(reg1, col = "cyan3", lwd = 2)
   abline(reg2, col = "gold", lwd = 2)
   abline(reg3, col = "deeppink3", lwd = 2)
 
+  # We recuperate the predictions
   pred1 <- predict(reg1)
   pred2 <- predict(reg2)
   pred3 <- predict(reg3)
   
-  # We add the coefficients and the t-test
+  # We add the coefficients and the t-test on the plot (if show_stat = TRUE only)
   if (show_stat == TRUE){
   text(1995, min(pred1)-2, paste(sprintf("coef = %.3f, t = %.3f", coef(reg1)[2], coef(summary(reg1))[2, "t value"])), pos = 4, col = "black")
   text(1995, min(pred2)-2, paste(sprintf("coef = %.3f, t = %.3f", coef(reg2)[2], coef(summary(reg2))[2, "t value"])), pos = 4, col = "black")
   text(1995, min(pred3)-2, paste(sprintf("coef = %.3f, t = %.3f", coef(reg3)[2], coef(summary(reg3))[2, "t value"])), pos = 4, col = "black")
   }
  
+  # We add the legend
   legend("topleft", legend = c("MIN", "MEAN", "MAX"), col = c("cyan3", "gold", "deeppink3"), lwd = 2, cex = 0.6)
 }
 
 
 
-# We test the function
+# We test the function (Here we are using the median)
 # plot_temporal_regression(
 # data_ESP_min$Median, data_ESP_mean$Median, data_ESP_max$Median, data_ESP_max$Year, 'Spain')
 # 
@@ -67,9 +75,12 @@ plot_temporal_regression <- function(data_min, data_mean, data_max, years, title
 # plot_temporal_regression(
 #   data_UKR_min$Median, data_UKR_mean$Median, data_UKR_max$Median, data_UKR_max$Year, 'Ukraine')
 
+
+# We create a function which permit to plot an inter quantile difference
+
 plot_temporal_regression_q <- function(data_q05, data_q95, years, title, show_stat = TRUE) {
   
-  # We regress the data
+  # We regress the temperatures on the years
   reg1 <- lm(data_q05 ~ years)
   reg2 <- lm(data_q95 ~ years)
 
@@ -91,12 +102,13 @@ plot_temporal_regression_q <- function(data_q05, data_q95, years, title, show_st
   text(1995, min(pred2)-2, paste(sprintf("coef = %.3f, t = %.3f", coef(reg2)[2], coef(summary(reg2))[2, "t value"])), pos = 4, col = "black")
   }
 
+  # We plot the legend
   legend("topleft", legend = c("quantile 0.05", "quantile 0.95"), col = c("cyan3", "red"), lwd = 2, cex = 0.6)
 }
 
-# We execute the function for the min, mean and max of all the countries
+# We execute the function for the min, mean and max of all the countries (with q0.05 and q0.95)
 plot_temporal_regression_q(
-  data_UKR_min$Quantile_0.05, data_UKR_min$Quantile_0.95, data_UKR_min$Year, 'Min Ukraine', FALSE)
+  data_UKR_min$Quantile_0.05, data_UKR_min$Quantile_0.95, data_UKR_min$Year, 'Min Ukraine')
 # plot_temporal_regression_q(
 #   data_UKR_mean$Quantile_0.05, data_UKR_mean$Quantile_0.95, data_UKR_min$Year, 'Mean Ukraine')
 # plot_temporal_regression_q(
@@ -119,4 +131,3 @@ plot_temporal_regression_q(
 #   data_POL_mean$Quantile_0.05, data_POL_mean$Quantile_0.95, data_ESP_min$Year, 'Mean Poland')
 # plot_temporal_regression_q(
 #   data_POL_max$Quantile_0.05, data_POL_max$Quantile_0.95, data_ESP_min$Year, 'Max Poland')
-# 

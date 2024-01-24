@@ -55,10 +55,15 @@ ToDo: include Theo's work on analyzing specific geographic points.
 # Density Histograms
 
 These plots shows the temperature densities for each year, each variable and each country.
+We will first look at the whole country, and then we will look at particular points.
+
+## Country level
+
+The next slides show 3D density histograms for each variable at the country level.
 
 ---
 
-<!-- Ukraine, Min -->
+### Ukraine - Min
 
 ```{r density_histogram_ukr_min, echo=FALSE, fig.align='center', out.width='100%'}
 plot_3d_density_by_year(data_UKR, "temperature_min", "Ukraine")
@@ -66,7 +71,7 @@ plot_3d_density_by_year(data_UKR, "temperature_min", "Ukraine")
 
 ---
 
-<!-- Max -->
+### Ukraine - Max
 
 ```{r density_histogram_ukr_max, echo=FALSE, fig.align='center', out.width='100%'}
 plot_3d_density_by_year(data_UKR, "temperature_max", "Ukraine")
@@ -74,7 +79,7 @@ plot_3d_density_by_year(data_UKR, "temperature_max", "Ukraine")
 
 ---
 
-<!-- Mean -->
+### Ukraine - Mean
 
 ```{r density_histogram_ukr_mean, echo=FALSE, fig.align='center', out.width='100%'}
 plot_3d_density_by_year(data_UKR, "temperature_mean", "Ukraine")
@@ -82,7 +87,7 @@ plot_3d_density_by_year(data_UKR, "temperature_mean", "Ukraine")
 
 ---
 
-<!-- Spain, Min -->
+### Spain - Min
 
 ```{r density_histogram_esp_min, echo=FALSE, fig.align='center', out.width='100%'}
 plot_3d_density_by_year(data_ESP, "temperature_min", "Spain")
@@ -90,7 +95,7 @@ plot_3d_density_by_year(data_ESP, "temperature_min", "Spain")
 
 ---
 
-<!-- Max -->
+### Spain - Max
 
 ```{r density_histogram_esp_max, echo=FALSE, fig.align='center', out.width='100%'}
 plot_3d_density_by_year(data_ESP, "temperature_max", "Spain")
@@ -98,7 +103,7 @@ plot_3d_density_by_year(data_ESP, "temperature_max", "Spain")
 
 ---
 
-<!-- Mean -->
+### Spain - Mean
 
 ```{r density_histogram_esp_mean, echo=FALSE, fig.align='center', out.width='100%'}
 plot_3d_density_by_year(data_ESP, "temperature_mean", "Spain")
@@ -106,7 +111,7 @@ plot_3d_density_by_year(data_ESP, "temperature_mean", "Spain")
 
 ---
 
-<!-- Poland, Min -->
+### Poland - Min
 
 ```{r density_histogram_pol_min, echo=FALSE, fig.align='center', out.width='100%'}
 plot_3d_density_by_year(data_POL, "temperature_min", "Poland")
@@ -114,7 +119,7 @@ plot_3d_density_by_year(data_POL, "temperature_min", "Poland")
 
 ---
 
-<!-- Max -->
+### Poland - Max
 
 ```{r density_histogram_pol_max, echo=FALSE, fig.align='center', out.width='100%'}
 plot_3d_density_by_year(data_POL, "temperature_max", "Poland")
@@ -122,7 +127,7 @@ plot_3d_density_by_year(data_POL, "temperature_max", "Poland")
 
 ---
 
-<!-- Mean -->
+### Poland - Mean
 
 ```{r density_histogram_pol_mean, echo=FALSE, fig.align='center', out.width='100%'}
 plot_3d_density_by_year(data_POL, "temperature_mean", "Poland")
@@ -130,7 +135,7 @@ plot_3d_density_by_year(data_POL, "temperature_mean", "Poland")
 
 ---
 
-<!-- Portugal, Min -->
+### Portugal - Min
 
 ```{r density_histogram_prt_min, echo=FALSE, fig.align='center', out.width='100%'}
 plot_3d_density_by_year(data_PRT, "temperature_min", "Portugal")
@@ -138,7 +143,7 @@ plot_3d_density_by_year(data_PRT, "temperature_min", "Portugal")
 
 ---
 
-<!-- Max -->
+### Portugal - Max
 
 ```{r density_histogram_prt_max, echo=FALSE, fig.align='center', out.width='100%'}
 plot_3d_density_by_year(data_PRT, "temperature_max", "Portugal")
@@ -146,10 +151,330 @@ plot_3d_density_by_year(data_PRT, "temperature_max", "Portugal")
 
 ---
 
-<!-- Mean -->
+### Portugal - Mean
 
 ```{r density_histogram_prt_mean, echo=FALSE, fig.align='center', out.width='100%'}
 plot_3d_density_by_year(data_PRT, "temperature_mean", "Portugal")
+```
+
+---
+
+## Specific geographic points
+
+The next slides show 3D density histograms for each variable at specific geographic points.
+
+```{r get_filtered_data, include=FALSE}
+source("geodetic_markers.R")
+filtered_data_UKR <- filter_data_UKR(data_UKR)
+filtered_data_ESP <- filter_data_ESP(data_ESP)
+filtered_data_POL <- filter_data_POL(data_POL)
+filtered_data_PRT <- filter_data_PRT(data_PRT)
+```
+
+---
+
+<!-- Ukraine -->
+
+### Ukraine
+
+```{r ukr_map, echo=FALSE, fig.align='center', out.width='100%'}
+library(mapview)
+leaflet_map <- map_UKR(data_UKR)
+temp_file <- tempfile(fileext = ".png")
+mapshot(leaflet_map, file = temp_file)
+knitr::include_graphics(temp_file)
+```
+
+---
+
+#### South
+
+```{r density_histogram_ukr_point_south_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_UKR$data_UKR_south, "temperature_min", "Ukraine - South")
+```
+
+---
+
+```{r density_histogram_ukr_point_south_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_UKR$data_UKR_south, "temperature_max", "Ukraine - South")
+```
+
+---
+
+```{r density_histogram_ukr_point_south_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_UKR$data_UKR_south, "temperature_mean", "Ukraine - South")
+```
+
+---
+
+#### West
+
+```{r density_histogram_ukr_point_west_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_UKR$data_UKR_west, "temperature_min", "Ukraine - West")
+```
+
+---
+
+```{r density_histogram_ukr_point_west_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_UKR$data_UKR_west, "temperature_max", "Ukraine - West")
+```
+
+---
+
+```{r density_histogram_ukr_point_west_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_UKR$data_UKR_west, "temperature_mean", "Ukraine - West")
+```
+---
+
+#### North
+
+```{r density_histogram_ukr_point_north_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_UKR$data_UKR_north, "temperature_min", "Ukraine - North")
+```
+
+---
+
+```{r density_histogram_ukr_point_north_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_UKR$data_UKR_north, "temperature_max", "Ukraine - North")
+```
+
+---
+
+```{r density_histogram_ukr_point_north_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_UKR$data_UKR_north, "temperature_mean", "Ukraine - North")
+```
+
+---
+
+#### East
+
+```{r density_histogram_ukr_point_east_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_UKR$data_UKR_east, "temperature_min", "Ukraine - East")
+```
+
+---
+
+```{r density_histogram_ukr_point_east_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_UKR$data_UKR_east, "temperature_max", "Ukraine - East")
+```
+
+---
+
+```{r density_histogram_ukr_point_east_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_UKR$data_UKR_east, "temperature_mean", "Ukraine - East")
+```
+
+---
+
+### Spain
+
+```{r density_histogram_spain_point, echo=FALSE, fig.align='center', out.width='100%'}
+leaflet_map <- map_ESP(data_ESP)
+temp_file <- tempfile(fileext = ".png")
+mapshot(leaflet_map, file = temp_file)
+knitr::include_graphics(temp_file)
+```
+
+--- 
+
+#### North
+
+```{r density_histogram_esp_point_north_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_ESP$data_ESP_north, "temperature_min", "Spain - North")
+```
+
+---
+
+```{r density_histogram_esp_point_north_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_ESP$data_ESP_north, "temperature_max", "Spain - North")
+```
+
+---
+
+```{r density_histogram_esp_point_north_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_ESP$data_ESP_north, "temperature_mean", "Spain - North")
+```
+
+---
+
+#### South
+
+```{r density_histogram_esp_point_south_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_ESP$data_ESP_south, "temperature_min", "Spain - South")
+```
+
+---
+
+```{r density_histogram_esp_point_south_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_ESP$data_ESP_south, "temperature_max", "Spain - South")
+```
+
+---
+
+```{r density_histogram_esp_point_south_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_ESP$data_ESP_south, "temperature_mean", "Spain - South")
+```
+
+---
+
+#### Center
+
+```{r density_histogram_esp_point_center_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_ESP$data_ESP_center, "temperature_min", "Spain - Center")
+```
+
+---
+
+```{r density_histogram_esp_point_center_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_ESP$data_ESP_center, "temperature_max", "Spain - Center")
+```
+
+---
+
+```{r density_histogram_esp_point_center_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_ESP$data_ESP_center, "temperature_mean", "Spain - Center")
+```
+
+---
+
+#### West
+
+```{r density_histogram_esp_point_west_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_ESP$data_ESP_west, "temperature_min", "Spain - West")
+```
+
+---
+
+```{r density_histogram_esp_point_west_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_ESP$data_ESP_west, "temperature_max", "Spain - West")
+```
+
+---
+
+```{r density_histogram_esp_point_west_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_ESP$data_ESP_west, "temperature_mean", "Spain - West")
+```
+
+---
+
+### Poland
+
+```{r density_histogram_pol_point, echo=FALSE, fig.align='center', out.width='100%'}
+leaflet_map <- map_POL(data_POL)
+temp_file <- tempfile(fileext = ".png")
+mapshot(leaflet_map, file = temp_file)
+knitr::include_graphics(temp_file)
+```
+
+---
+
+#### North
+
+```{r density_histogram_pol_point_north_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_POL$data_POL_north, "temperature_min", "Poland - North")
+```
+
+---
+
+```{r density_histogram_pol_point_north_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_POL$data_POL_north, "temperature_max", "Poland - North")
+```
+
+---
+
+```{r density_histogram_pol_point_north_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_POL$data_POL_north, "temperature_mean", "Poland - North")
+```
+
+---
+
+#### Center
+
+```{r density_histogram_pol_point_center_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_POL$data_POL_center, "temperature_min", "Poland - Center")
+```
+
+---
+
+```{r density_histogram_pol_point_center_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_POL$data_POL_center, "temperature_max", "Poland - Center")
+```
+
+---
+
+```{r density_histogram_pol_point_center_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_POL$data_POL_center, "temperature_mean", "Poland - Center")
+```
+
+---
+
+### Portugal
+
+```{r density_histogram_prt_point, echo=FALSE, fig.align='center', out.width='100%'}
+leaflet_map <- map_PRT(data_PRT)
+temp_file <- tempfile(fileext = ".png")
+mapshot(leaflet_map, file = temp_file)
+knitr::include_graphics(temp_file)
+```
+
+---
+
+#### North
+
+```{r density_histogram_prt_point_north_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_PRT$data_PRT_north, "temperature_min", "Portugal - North")
+```
+
+---
+
+```{r density_histogram_prt_point_north_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_PRT$data_PRT_north, "temperature_max", "Portugal - North")
+```
+
+---
+
+```{r density_histogram_prt_point_north_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_PRT$data_PRT_north, "temperature_mean", "Portugal - North")
+```
+
+---
+
+#### West
+
+```{r density_histogram_prt_point_west_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_PRT$data_PRT_west, "temperature_min", "Portugal - West")
+```
+
+---
+
+```{r density_histogram_prt_point_west_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_PRT$data_PRT_west, "temperature_max", "Portugal - West")
+```
+
+---
+
+```{r density_histogram_prt_point_west_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_PRT$data_PRT_west, "temperature_mean", "Portugal - West")
+```
+
+---
+
+#### South
+
+```{r density_histogram_prt_point_south_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_PRT$data_PRT_south, "temperature_min", "Portugal - South")
+```
+
+---
+
+```{r density_histogram_prt_point_south_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_PRT$data_PRT_south, "temperature_max", "Portugal - South")
+```
+
+---
+
+```{r density_histogram_prt_point_south_mean, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(filtered_data_PRT$data_PRT_south, "temperature_mean", "Portugal - South")
 ```
 
 # Linear regression

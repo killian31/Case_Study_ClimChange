@@ -11,7 +11,7 @@ library(viridis)
 # data_UKR <- read.csv("data/temperature_daily_grid_UKR.csv", header = TRUE, sep = ",")
 # data_ESP <- read.csv("data/temperature_daily_grid_ESP.csv", header = TRUE, sep = ",")
 # data_POL <- read.csv("data/temperature_daily_grid_POL.csv", header = TRUE, sep = ",")
-# data_PRT <- read.csv("data/temperature_daily_grid_PRT.csv", header = TRUE, sep = ",")
+data_PRT <- read.csv("data/temperature_daily_grid_PRT.csv", header = TRUE, sep = ",")
 # 
 # # convert kelvin to celsius
 # data_UKR <- data_UKR %>%
@@ -23,8 +23,8 @@ library(viridis)
 # data_POL <- data_POL %>%
 #   mutate_at(vars(-1:-3), ~. - 273.15)
 # 
-# data_PRT <- data_PRT %>%
-#   mutate_at(vars(-1:-3), ~. - 273.15)
+data_PRT <- data_PRT %>%
+  mutate_at(vars(-1:-3), ~. - 273.15)
 
 plot_density_by_year <- function(data, variable, country_name, line_size = 0.3) {
   # Ensure the date column is in Date format
@@ -43,11 +43,13 @@ plot_density_by_year <- function(data, variable, country_name, line_size = 0.3) 
   
   # Plotting
   ggplot(data, aes(x = !!sym(variable), group = year, color = as.factor(year))) +
-    geom_density(linewidth = line_size) +
+    geom_density(linewidth = line_size, kernel = "optcosine", adjust = 1, bw = 0.75) +
     scale_color_manual(values = color_palette) +
-    labs(title = paste("Density of", variable, "in", country_name, "by year (1990-2020)"),
-         x = variable,
-         y = "Density") +
+    labs(
+      title = paste("Density of", variable, "in", country_name, "by year (1990-2020)"), 
+      subtitle = "bandwidth = 0.75, kernel = optcosine, adjust = 1",
+      x = variable,
+      y = "Density") +
     theme_minimal()
 }
 
@@ -67,13 +69,20 @@ plot_3d_density_by_year <- function(data, variable, country_name) {
   filtered_data$year <- as.factor(filtered_data$year)
   
   # Plotting
-  ggplot(filtered_data, aes(x = !!sym(variable), y = `year`, fill = ..x..)) +
-    geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01, gradient_lwd = 1.) +
+  ggplot(filtered_data, aes(x = !!sym(variable), y = `year`, fill = after_stat(x))) +
+    geom_density_ridges_gradient(
+      scale = 5, 
+      rel_min_height = 0.01, 
+      #gradient_lwd = 1., 
+      bandwidth = 0.75, 
+      quantile_lines = TRUE, 
+      quantiles = c(0.025, 0.975)
+    ) +
     scale_x_continuous(expand = c(0.01, 0)) +
     scale_y_discrete(expand = c(0.01, 0)) +
     scale_fill_viridis(name = "Temp. [C]", option = "C") +
     labs(title = paste('Temperatures in', country_name),
-         subtitle = paste(variable, '(Celsius) by year between 1990 and 2020')) +
+         subtitle = paste(variable, '(Celsius) by year between 1990 and 2020\nbandwidth = 0.75, kernel = gaussian')) +
     theme_ridges(font_size = 13, grid = TRUE) + theme(axis.title.y = element_blank())
 }
 
@@ -83,5 +92,5 @@ plot_3d_density_by_year <- function(data, variable, country_name) {
 # plot_density_by_year(data_UKR, "temperature_max", "Ukraine")
 
 # plot_3d_density_by_year(data_UKR, "temperature_mean", "Ukraine")
-# plot_3d_density_by_year(data_PRT, "temperature_max", "Portugal")
+plot_3d_density_by_year(data_PRT, "temperature_max", "Portugal")
 

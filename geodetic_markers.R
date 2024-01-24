@@ -66,7 +66,7 @@ map_UKR <- function(data_UKR) {
   carte_UKR <- carte_UKR %>%
     addMarkers(lng = ~lon, lat = ~lat, popup = ~paste("Latitude: ", lat, "<br>Longitude: ", lon))
   
-  print(carte_UKR)
+  return (carte_UKR)
 }
 
 # filter_data_UKR <- filter_data_UKR(data_UKR)
@@ -118,7 +118,7 @@ map_ESP <- function(data_ESP) {
   carte_ESP <- carte_ESP %>%
     addMarkers(lng = ~lon, lat = ~lat, popup = ~paste("Latitude: ", lat, "<br>Longitude: ", lon))
   
-  print(carte_ESP)
+  return (carte_ESP)
 }
  
 # filter_data_ESP <- filter_data_ESP(data_ESP)
@@ -171,7 +171,7 @@ map_POL <- function(data_POL) {
   carte_POL <- carte_POL %>%
     addMarkers(lng = ~lon, lat = ~lat, popup = ~paste("Latitude: ", lat, "<br>Longitude: ", lon))
   
-  print(carte_POL)
+  return (carte_POL)
 }
 
 # filter_data_POL <- filter_data_POL(data_POL)
@@ -216,7 +216,7 @@ map_PRT <- function(data_PRT) {
   carte_PRT <- carte_PRT %>%
     addMarkers(lng = ~lon, lat = ~lat, popup = ~paste("Latitude: ", lat, "<br>Longitude: ", lon))
   
-  print(carte_PRT)
+  return (carte_PRT)
 }
 
 # filter_data_PRT <- filter_data_PRT(data_PRT)

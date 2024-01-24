@@ -87,7 +87,7 @@ plot_temporal_regression_q <- function(data_q05, data_q95, years, title, show_st
   
   # We plot the regressions
   plot(years, data_q05, type = 'n', xlab = "Years", 
-       ylab = "Temparatures (in °C)", main = title, ylim = c(min(predict(reg1))-5, max(predict(reg2))+5))
+       ylab = "Temparatures (in °C)", main = title, ylim = c(-30, 40))
   abline(reg1, col = "cyan3", lwd = 2)
   abline(reg2, col = "red", lwd = 2)
   pred1 <- predict(reg1)

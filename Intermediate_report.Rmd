@@ -1,0 +1,181 @@
+---
+title: "Intermediate Results"
+author: "Théo Druilhe, Pierre Larose, Sigurd Saue and Killian Steunou"
+date: "`r format(Sys.Date(), '%d %B, %Y')`"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source("kernel_barchart.R")
+source("aggregate_data.R")
+library(jpeg)
+library(grid)
+library(ggplot2)
+library(dplyr)
+
+# Load the data
+data_UKR <- read.csv("data/temperature_daily_grid_UKR.csv", header = TRUE, sep = ",")
+data_ESP <- read.csv("data/temperature_daily_grid_ESP.csv", header = TRUE, sep = ",")
+data_POL <- read.csv("data/temperature_daily_grid_POL.csv", header = TRUE, sep = ",")
+data_PRT <- read.csv("data/temperature_daily_grid_PRT.csv", header = TRUE, sep = ",")
+
+# Convert kelvin to Celsius
+data_UKR <- data_UKR %>%
+  mutate_at(vars(-1:-3), ~. - 273.15)
+
+data_ESP <- data_ESP %>%
+  mutate_at(vars(-1:-3), ~. - 273.15)
+
+data_POL <- data_POL %>%
+  mutate_at(vars(-1:-3), ~. - 273.15)
+
+data_PRT <- data_PRT %>%
+  mutate_at(vars(-1:-3), ~. - 273.15)
+```
+
+# Introduction
+
+This report presents the latest results of our work on the project. We will present the results of our analysis on the data we have been given, mostly through visualizations.
+
+We will conduct our analysis country by country, focusing on Europe through Ukraine, Poland, Spain and Portugal. For each country we will conduct analysis on data at the country level, then we will do it for specific geographical points. All t-tests are performed at the 5% level.
+
+---
+
+# Ukraine
+
+## Country level
+
+First, we plot the regression line of the median of our 3 statistics: minimum, maximum and mean temperature.
+
+---
+
+### Median
+
+```{r linear_regression_ukr, echo=FALSE, fig.align='center', out.width='100%'}
+source("temporal_regression.R")
+data_UKR_max <- read.csv("output_data/UKR/aggregate_max_UKR.csv", header = TRUE, sep = ",")
+data_UKR_mean <- read.csv("output_data/UKR/aggregate_mean_UKR.csv", header = TRUE, sep = ",")
+data_UKR_min <- read.csv("output_data/UKR/aggregate_min_UKR.csv", header = TRUE, sep = ",")
+
+plot_temporal_regression(
+  data_UKR_min$Median,
+  data_UKR_mean$Median, 
+  data_UKR_max$Median, 
+  data_UKR_max$Year, 
+  'Regression of the median temperature in Ukraine across years')
+```
+
+
+---
+
+We can see that the median mean, minimum and maximum temperatures are slightly increasing (but still increasing) over the years. The t-tests support this observation, the variable 'Years' is significant. For example, every year, the median of the maximum temperature increases in average by 0.061°C. This is similar to an increase of approximately 1.8°C of the median temperature over 30 years.
+
+We will now analyze the quantiles of order 0.05 and 0.95 of each variable, instead of the medians. We will also plot the regression lines of these quantiles.
+
+---
+
+### Quantiles
+
+```{r linear_regression_ukr_quantiles_min_max_mean, echo=FALSE, fig.align='center', out.width='100%'}
+par(mfrow=c(1,3))
+
+plot_temporal_regression_q(
+  data_UKR_min$Quantile_0.05, 
+  data_UKR_min$Quantile_0.95, 
+  data_UKR_min$Year, 
+  'Minimum temperature \nquantiles 0.05 and 0.95')
+plot_temporal_regression_q(
+  data_UKR_mean$Quantile_0.05, 
+  data_UKR_mean$Quantile_0.95, 
+  data_UKR_mean$Year, 
+  'Average temperature \nquantiles 0.05 and 0.95')
+plot_temporal_regression_q(
+  data_UKR_max$Quantile_0.05, 
+  data_UKR_max$Quantile_0.95, 
+  data_UKR_max$Year, 
+  'Maximum temperature \nquantiles 0.05 and 0.95 ')
+```
+
+--- 
+
+The variable is significant for the quantiles of order 0.05 and 0.95 of all variables of temperature. This means that the quantiles of order 0.05 and 0.95 of the minimum, average and maximum temperatures are increasing over the years. This is consistent with the results obtained with the medians. The quantile of order 0.95 shows a much stronger increase than the quantile of order 0.05. This means that the maximum temperatures are increasing much more than the minimum temperatures. For example, the quantile of order 0.95 of the maximum temperature has increased by almost 3°C over 30 years.
+
+We will now look at the minimum and maximum temperature densities across years in Ukraine.
+
+---
+
+### Densities
+#### Minimum temperature
+
+```{r density_ukr_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_UKR, "temperature_min", "Ukraine")
+```
+
+---
+
+#### Maximum temperature
+
+```{r density_ukr_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_UKR, "temperature_max", "Ukraine")
+```
+
+---
+
+We can see that the maximum values seem to be increasing over the years.
+
+---
+
+## Geographical points analysis
+
+We will now analyze the data at specific geographical points. We will focus on 4 points in Ukraine, one at the West, that is in a mountainous area, one at the East, that is in a flat area, one at the North, and one at the South, that is in an area close to the sea.
+
+```{r ukr_map, echo=FALSE, fig.align='center', out.width='100%'}
+library(mapview)
+source("geodetic_markers.R")
+leaflet_map <- map_UKR(data_UKR)
+temp_file <- tempfile(fileext = ".png")
+mapshot(leaflet_map, file = temp_file)
+knitr::include_graphics(temp_file)
+```
+
+We will look at the same plots as for the entire country to see if the results are consistent or not.
+
+---
+
+```{r get_filtered_data, include=FALSE}
+filtered_data_UKR <- filter_data_UKR(data_UKR)
+filtered_data_ESP <- filter_data_ESP(data_ESP)
+filtered_data_POL <- filter_data_POL(data_POL)
+filtered_data_PRT <- filter_data_PRT(data_PRT)
+```
+
+### Median
+
+Todo
+
+---
+
+# Poland
+
+## Country level
+
+First, we plot the regression line of the median of our 3 statistics: minimum, maximum and mean temperature.
+
+---
+
+```{r linear_regression_pol, echo=FALSE, fig.align='center', out.width='100%'}
+data_POL_max <- read.csv("output_data/POL/aggregate_max_POL.csv", header = TRUE, sep = ",")
+data_POL_mean <- read.csv("output_data/POL/aggregate_mean_POL.csv", header = TRUE, sep = ",")
+data_POL_min <- read.csv("output_data/POL/aggregate_min_POL.csv", header = TRUE, sep = ",")
+plot_temporal_regression(
+  data_POL_min$Median,
+  data_POL_mean$Median, 
+  data_POL_max$Median, 
+  data_POL_max$Year, 
+  'Regression of the median temperature in Poland across years')
+```
+
+---
+
+The results are very similar to the ones we obtained for Ukraine. The median mean, minimum and maximum temperatures are slightly increasing (but still increasing) over the years. The t-tests support this observation, the variable 'Years' is significant. For example, every year, the median of the maximum temperature increases in average by 0.058°C. This is similar to an increase of approximately 1.7°C over 30 years.

@@ -99,7 +99,7 @@ plot_temporal_regression_q(
 
 --- 
 
-The variable is significant for the quantiles of order 0.05 and 0.95 of all variables of temperature. This means that the quantiles of order 0.05 and 0.95 of the minimum, average and maximum temperatures are increasing over the years. This is consistent with the results obtained with the medians. The quantile of order 0.95 shows a much stronger increase than the quantile of order 0.05. This means that the maximum temperatures are increasing much more than the minimum temperatures. For example, the quantile of order 0.95 of the maximum temperature has increased by almost 3°C over 30 years.
+None of the 0.05 quantiles coefficients are significant, but all of the 0.95 quantiles coefficients are. This means that the maximum values are increasing over the years, but the minimum values are not.
 
 We will now look at the minimum and maximum temperature densities across years in Ukraine.
 
@@ -128,7 +128,7 @@ We can see that the maximum values seem to be increasing over the years.
 
 ## Geographical points analysis
 
-We will now analyze the data at specific geographical points. We will focus on 4 points in Ukraine, one at the West, that is in a mountainous area, one at the East, that is in a flat area, one at the North, and one at the South, that is in an area close to the sea.
+We will now analyze the data at specific geographical points. We will focus on 4 points in Ukraine, one at the West, that is in a mountainous area, one at the East, that is in a flat area, one at the North which has a continental climate, and one at the South, that is in an area close to the sea.
 
 ```{r ukr_map, echo=FALSE, fig.align='center', out.width='100%'}
 library(mapview)
@@ -152,9 +152,173 @@ filtered_data_PRT <- filter_data_PRT(data_PRT)
 
 ### Median
 
-Todo
+We will first look at the regression lines of the median of the minimum, 
+average and maximum temperatures at each point for our four geographical points.
 
 ---
+
+```{r load aggregate data, echo=FALSE, fig.align='center', out.width='100%', include = FALSE}
+
+source("aggregate_data.R")
+
+# UKR
+
+aggregate_data_ukr_min_west <- calculateYearlyStatistics(filtered_data_UKR$data_UKR_west, 1990, 2020, "temperature_min")
+aggregate_data_ukr_max_west <- calculateYearlyStatistics(filtered_data_UKR$data_UKR_west, 1990, 2020, "temperature_max")
+aggregate_data_ukr_mean_west <- calculateYearlyStatistics(filtered_data_UKR$data_UKR_west, 1990, 2020, "temperature_mean")
+aggregate_data_ukr_min_east <- calculateYearlyStatistics(filtered_data_UKR$data_UKR_east, 1990, 2020, "temperature_min")
+aggregate_data_ukr_max_east <- calculateYearlyStatistics(filtered_data_UKR$data_UKR_east, 1990, 2020, "temperature_max")
+aggregate_data_ukr_mean_east <- calculateYearlyStatistics(filtered_data_UKR$data_UKR_east, 1990, 2020, "temperature_mean")
+aggregate_data_ukr_min_south <- calculateYearlyStatistics(filtered_data_UKR$data_UKR_south, 1990, 2020, "temperature_min")
+aggregate_data_ukr_max_south <- calculateYearlyStatistics(filtered_data_UKR$data_UKR_south, 1990, 2020, "temperature_max")
+aggregate_data_ukr_mean_south <- calculateYearlyStatistics(filtered_data_UKR$data_UKR_south, 1990, 2020, "temperature_mean")
+aggregate_data_ukr_min_north <- calculateYearlyStatistics(filtered_data_UKR$data_UKR_north, 1990, 2020, "temperature_min")
+aggregate_data_ukr_max_north <- calculateYearlyStatistics(filtered_data_UKR$data_UKR_north, 1990, 2020, "temperature_max")
+aggregate_data_ukr_mean_north <- calculateYearlyStatistics(filtered_data_UKR$data_UKR_north, 1990, 2020, "temperature_mean")
+
+# POL
+
+aggregate_data_pol_min_north <- calculateYearlyStatistics(filtered_data_POL$data_POL_north, 1990, 2020, "temperature_min")
+aggregate_data_pol_max_north <- calculateYearlyStatistics(filtered_data_POL$data_POL_north, 1990, 2020, "temperature_max")
+aggregate_data_pol_mean_north <- calculateYearlyStatistics(filtered_data_POL$data_POL_north, 1990, 2020, "temperature_mean")
+aggregate_data_pol_min_center <- calculateYearlyStatistics(filtered_data_POL$data_POL_center, 1990, 2020, "temperature_min")
+aggregate_data_pol_max_center <- calculateYearlyStatistics(filtered_data_POL$data_POL_center, 1990, 2020, "temperature_max")
+aggregate_data_pol_mean_center <- calculateYearlyStatistics(filtered_data_POL$data_POL_center, 1990, 2020, "temperature_mean")
+
+# ESP
+
+aggregate_data_esp_min_west <- calculateYearlyStatistics(filtered_data_ESP$data_ESP_west, 1990, 2020, "temperature_min")
+aggregate_data_esp_max_west <- calculateYearlyStatistics(filtered_data_ESP$data_ESP_west, 1990, 2020, "temperature_max")
+aggregate_data_esp_mean_west <- calculateYearlyStatistics(filtered_data_ESP$data_ESP_west, 1990, 2020, "temperature_mean")
+aggregate_data_esp_min_south <- calculateYearlyStatistics(filtered_data_ESP$data_ESP_south, 1990, 2020, "temperature_min")
+aggregate_data_esp_max_south <- calculateYearlyStatistics(filtered_data_ESP$data_ESP_south, 1990, 2020, "temperature_max")
+aggregate_data_esp_mean_south <- calculateYearlyStatistics(filtered_data_ESP$data_ESP_south, 1990, 2020, "temperature_mean")
+aggregate_data_esp_min_north <- calculateYearlyStatistics(filtered_data_ESP$data_ESP_north, 1990, 2020, "temperature_min")
+aggregate_data_esp_max_north <- calculateYearlyStatistics(filtered_data_ESP$data_ESP_north, 1990, 2020, "temperature_max")
+aggregate_data_esp_mean_north <- calculateYearlyStatistics(filtered_data_ESP$data_ESP_north, 1990, 2020, "temperature_mean")
+aggregate_data_esp_min_center <- calculateYearlyStatistics(filtered_data_ESP$data_ESP_center, 1990, 2020, "temperature_min")
+aggregate_data_esp_max_center <- calculateYearlyStatistics(filtered_data_ESP$data_ESP_center, 1990, 2020, "temperature_max")
+aggregate_data_esp_mean_center <- calculateYearlyStatistics(filtered_data_ESP$data_ESP_center, 1990, 2020, "temperature_mean")
+
+# PRT
+
+aggregate_data_prt_min_west <- calculateYearlyStatistics(filtered_data_PRT$data_PRT_west, 1990, 2020, "temperature_min")
+aggregate_data_prt_max_west <- calculateYearlyStatistics(filtered_data_PRT$data_PRT_west, 1990, 2020, "temperature_max")
+aggregate_data_prt_mean_west <- calculateYearlyStatistics(filtered_data_PRT$data_PRT_west, 1990, 2020, "temperature_mean")
+aggregate_data_prt_min_south <- calculateYearlyStatistics(filtered_data_PRT$data_PRT_south, 1990, 2020, "temperature_min")
+aggregate_data_prt_max_south <- calculateYearlyStatistics(filtered_data_PRT$data_PRT_south, 1990, 2020, "temperature_max")
+aggregate_data_prt_mean_south <- calculateYearlyStatistics(filtered_data_PRT$data_PRT_south, 1990, 2020, "temperature_mean")
+aggregate_data_prt_min_north <- calculateYearlyStatistics(filtered_data_PRT$data_PRT_north, 1990, 2020, "temperature_min")
+aggregate_data_prt_max_north <- calculateYearlyStatistics(filtered_data_PRT$data_PRT_north, 1990, 2020, "temperature_max")
+aggregate_data_prt_mean_north <- calculateYearlyStatistics(filtered_data_PRT$data_PRT_north, 1990, 2020, "temperature_mean")
+```
+
+```{r regression_ukr_points, echo=FALSE, fig.align='center', out.width='100%'}
+par(mfrow=c(2,2))
+plot_temporal_regression(
+  aggregate_data_ukr_min_west$Median,
+  aggregate_data_ukr_mean_west$Median, 
+  aggregate_data_ukr_max_west$Median, 
+  aggregate_data_ukr_mean_west$Year, 
+  'Regression of the median temperature\nin Ukraine across years (West)')
+plot_temporal_regression(
+  aggregate_data_ukr_min_east$Median,
+  aggregate_data_ukr_mean_east$Median, 
+  aggregate_data_ukr_max_east$Median, 
+  aggregate_data_ukr_mean_east$Year, 
+  'Regression of the median temperature\nin Ukraine across years (East)')
+plot_temporal_regression(
+  aggregate_data_ukr_min_south$Median,
+  aggregate_data_ukr_mean_south$Median, 
+  aggregate_data_ukr_max_south$Median, 
+  aggregate_data_ukr_mean_west$Year, 
+  'Regression of the median temperature\nin Ukraine across years (South)')
+plot_temporal_regression(
+  aggregate_data_ukr_min_north$Median,
+  aggregate_data_ukr_mean_north$Median, 
+  aggregate_data_ukr_max_north$Median, 
+  aggregate_data_ukr_mean_west$Year, 
+  'Regression of the median temperature\nin Ukraine across years (North)')
+```
+
+---
+
+We choose not to freeze the y axis in order to better visualize the regression lines, since we are more interested in the regression coefficients than in the actual values of the variables. We can see that the western region is the one with the highest coefficients on average. We cannot conclude that the temperature is increasing in the eastern region, since none of the coefficients (for min max and mean) are statistically significant, possibly due to the high variance of the data. We remark a slight increase in the temperature in the northern region. For the South, it is similar to the East except for the maximum temperature that is increasing.
+
+
+We will now analyze the quantiles of order 0.05 and 0.95 of each variable, instead of the medians. We will also plot the regression lines of these quantiles.
+
+--- 
+
+### Quantiles
+
+```{r regression_ukr_quantiles_points, echo=FALSE, fig.align='center', out.width='100%'}
+par(mfrow=c(3,4))
+plot_temporal_regression_q(
+  aggregate_data_ukr_min_west$Quantile_0.05, 
+  aggregate_data_ukr_min_west$Quantile_0.95, 
+  aggregate_data_ukr_min_west$Year, 
+  'Ukraine West min')
+plot_temporal_regression_q(
+  aggregate_data_ukr_min_east$Quantile_0.05, 
+  aggregate_data_ukr_min_east$Quantile_0.95, 
+  aggregate_data_ukr_min_east$Year, 
+  'Ukraine East min')
+plot_temporal_regression_q(
+  aggregate_data_ukr_min_south$Quantile_0.05, 
+  aggregate_data_ukr_min_south$Quantile_0.95, 
+  aggregate_data_ukr_min_west$Year, 
+  'Ukraine South min')
+plot_temporal_regression_q(
+  aggregate_data_ukr_min_north$Quantile_0.05, 
+  aggregate_data_ukr_min_north$Quantile_0.95, 
+  aggregate_data_ukr_min_north$Year, 
+  'Ukraine North min')
+plot_temporal_regression_q(
+  aggregate_data_ukr_mean_west$Quantile_0.05, 
+  aggregate_data_ukr_mean_west$Quantile_0.95, 
+  aggregate_data_ukr_mean_west$Year, 
+  'Ukraine West mean')
+plot_temporal_regression_q(
+  aggregate_data_ukr_mean_east$Quantile_0.05, 
+  aggregate_data_ukr_mean_east$Quantile_0.95, 
+  aggregate_data_ukr_mean_east$Year, 
+  'Ukraine East mean')
+plot_temporal_regression_q(
+  aggregate_data_ukr_mean_south$Quantile_0.05, 
+  aggregate_data_ukr_mean_south$Quantile_0.95, 
+  aggregate_data_ukr_mean_west$Year, 
+  'Ukraine South mean')
+plot_temporal_regression_q(
+  aggregate_data_ukr_mean_north$Quantile_0.05, 
+  aggregate_data_ukr_mean_north$Quantile_0.95, 
+  aggregate_data_ukr_mean_north$Year, 
+  'Ukraine North mean')
+plot_temporal_regression_q(
+  aggregate_data_ukr_max_west$Quantile_0.05, 
+  aggregate_data_ukr_max_west$Quantile_0.95, 
+  aggregate_data_ukr_max_west$Year, 
+  'Ukraine West max')
+plot_temporal_regression_q(
+  aggregate_data_ukr_max_east$Quantile_0.05, 
+  aggregate_data_ukr_max_east$Quantile_0.95, 
+  aggregate_data_ukr_max_east$Year, 
+  'Ukraine East max')
+plot_temporal_regression_q(
+  aggregate_data_ukr_max_south$Quantile_0.05, 
+  aggregate_data_ukr_max_south$Quantile_0.95, 
+  aggregate_data_ukr_max_west$Year, 
+  'Ukraine South max')
+plot_temporal_regression_q(
+  aggregate_data_ukr_max_north$Quantile_0.05, 
+  aggregate_data_ukr_max_north$Quantile_0.95, 
+  aggregate_data_ukr_max_north$Year, 
+  'Ukraine North max')
+```
+
+---
+
+For the 0.95 quantile, the northern region has the largest increase, with coefficients between 0.08 and 0.105, all significant. For the 0.05 quantile, the increases are lower than for the 0.95 quantile globally. We note that none of the 12 0.05 quantile coefficients are significant.
 
 # Poland
 
@@ -163,6 +327,8 @@ Todo
 First, we plot the regression line of the median of our 3 statistics: minimum, maximum and mean temperature.
 
 ---
+
+### Median
 
 ```{r linear_regression_pol, echo=FALSE, fig.align='center', out.width='100%'}
 data_POL_max <- read.csv("output_data/POL/aggregate_max_POL.csv", header = TRUE, sep = ",")
@@ -179,3 +345,536 @@ plot_temporal_regression(
 ---
 
 The results are very similar to the ones we obtained for Ukraine. The median mean, minimum and maximum temperatures are slightly increasing (but still increasing) over the years. The t-tests support this observation, the variable 'Years' is significant. For example, every year, the median of the maximum temperature increases in average by 0.058°C. This is similar to an increase of approximately 1.7°C over 30 years.
+
+---
+
+### Quantiles
+
+```{r regression_pol_quantiles, echo=FALSE, fig.align='center', out.width='100%'}
+par(mfrow=c(1,3))
+plot_temporal_regression_q(
+  data_POL_min$Quantile_0.05, 
+  data_POL_min$Quantile_0.95, 
+  data_POL_min$Year, 
+  'Minimum temperature \nquantiles 0.05 and 0.95')
+plot_temporal_regression_q(
+  data_POL_mean$Quantile_0.05, 
+  data_POL_mean$Quantile_0.95, 
+  data_POL_mean$Year, 
+  'Average temperature \nquantiles 0.05 and 0.95')
+plot_temporal_regression_q(
+  data_POL_max$Quantile_0.05, 
+  data_POL_max$Quantile_0.95, 
+  data_POL_max$Year, 
+  'Maximum temperature \nquantiles 0.05 and 0.95')
+```
+
+---
+
+None of the 0.05 quantiles coefficients are significant, but all of the 0.95 quantiles coefficients are. This means that the maximum values are increasing over the years, but the minimum values are not.
+
+We will now look at the minimum and maximum temperature densities across years in Poland
+
+---
+
+### Densities
+
+#### Minimum temperature
+
+```{r density_pol_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_POL, "temperature_min", "Poland")
+```
+
+---
+
+#### Maximum temperature
+
+```{r density_pol_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_POL, "temperature_max", "Poland")
+```
+
+---
+
+It looks like there is a bimodal distribution for both the maximum and minimum temperature (probably seasonal). It looks like the second mode is slightly shifting to the right over the years. This is consistent with the results of the linear regression.
+
+---
+
+## Geographic points analysis
+
+We will now analyze the data at specific geographical points. We will focus on 2 points in Poland, one at the the North by the sea, and one at the south that should face a continental climate.
+
+```{r pol_map, echo=FALSE, fig.align='center', out.width='100%'}
+leaflet_map <- map_POL(data_POL)
+temp_file <- tempfile(fileext = ".png")
+mapshot(leaflet_map, file = temp_file)
+knitr::include_graphics(temp_file)
+```
+
+---
+
+### Median
+
+```{r regression_pol_points, echo=FALSE, fig.align='center', out.width='100%'}
+par(mfrow=c(1,2))
+plot_temporal_regression(
+  aggregate_data_pol_min_north$Median,
+  aggregate_data_pol_mean_north$Median, 
+  aggregate_data_pol_max_north$Median, 
+  aggregate_data_pol_mean_north$Year, 
+  'Regression of the median temperature\nin Poland across years (North)')
+plot_temporal_regression(
+  aggregate_data_pol_min_center$Median,
+  aggregate_data_pol_mean_center$Median, 
+  aggregate_data_pol_max_center$Median, 
+  aggregate_data_pol_mean_center$Year, 
+  'Regression of the median temperature\nin Poland across years (Center)')
+```
+
+---
+
+All increases are significant. The increase is the largest for all variable (minimum, mean and maximum) in the center of Poland, with coefficients between 0.05 and 0.06. The increase is the smallest in the north of Poland, with coefficients quite similar for all the three variables, around 0.042.
+
+We will now analyze the quantiles of order 0.05 and 0.95 of each variable, instead of the medians. We will also plot the regression lines of these quantiles.
+
+---
+
+### Quantiles
+
+```{r linear_regression_pol_quantiles_points, echo=FALSE, fig.align='center', out.width='100%'}
+par(mfrow=c(3,2))
+plot_temporal_regression_q(
+  aggregate_data_pol_min_north$Quantile_0.05, 
+  aggregate_data_pol_min_north$Quantile_0.95, 
+  aggregate_data_pol_min_north$Year, 
+  'Poland North min')
+plot_temporal_regression_q(
+  aggregate_data_pol_min_center$Quantile_0.05, 
+  aggregate_data_pol_min_center$Quantile_0.95, 
+  aggregate_data_pol_min_center$Year, 
+  'Poland Center min')
+plot_temporal_regression_q(
+  aggregate_data_pol_mean_north$Quantile_0.05, 
+  aggregate_data_pol_mean_north$Quantile_0.95, 
+  aggregate_data_pol_mean_north$Year, 
+  'Poland North mean')
+plot_temporal_regression_q(
+  aggregate_data_pol_mean_center$Quantile_0.05, 
+  aggregate_data_pol_mean_center$Quantile_0.95, 
+  aggregate_data_pol_mean_center$Year, 
+  'Poland Center mean')
+plot_temporal_regression_q(
+  aggregate_data_pol_max_north$Quantile_0.05, 
+  aggregate_data_pol_max_north$Quantile_0.95, 
+  aggregate_data_pol_max_north$Year, 
+  'Poland North max')
+plot_temporal_regression_q(
+  aggregate_data_pol_max_center$Quantile_0.05, 
+  aggregate_data_pol_max_center$Quantile_0.95, 
+  aggregate_data_pol_max_center$Year, 
+  'Poland Center max')
+
+```
+
+---
+
+
+None of the 0.05 quantiles coefficients are significant, but all of the 0.95 quantiles coefficients are except the one for the maximum temperature, probably due to a high variance in the data. The 0.95 quantiles of the average and the minimum temperatures are increasing over the years, with the Center facing a higher increase than the North.
+
+--- 
+
+# Spain
+
+## Country level
+
+First, we plot the regression line of the median of our 3 statistics: minimum, maximum and mean temperature.
+
+---
+
+### Median
+
+```{r linear_regression_spain, echo=FALSE, fig.align='center', out.width='100%'}
+data_ESP_min <- read.csv("output_data/ESP/aggregate_min_ESP.csv", header = TRUE, sep = ",")
+data_ESP_mean <- read.csv("output_data/ESP/aggregate_mean_ESP.csv", header = TRUE, sep = ",")
+data_ESP_max <- read.csv("output_data/ESP/aggregate_max_ESP.csv", header = TRUE, sep = ",")
+
+plot_temporal_regression(
+  data_ESP_min$Median,
+  data_ESP_mean$Median, 
+  data_ESP_max$Median, 
+  data_ESP_max$Year, 
+  'Regression of the median temperature in Spain across years')
+```
+
+---
+
+The maximum temperature does not show a significant increase (probably due to a high variance on the data), but the minimum and mean temperature do. The increase for the minimum and the average temperatures are very similar.
+
+We will now analyze the quantiles of order 0.05 and 0.95 of each variable, instead of the medians. We will also plot the regression lines of these quantiles.
+
+---
+
+### Quantiles
+
+```{r linear_regression_esp_quantiles_min_max_mean, echo=FALSE, fig.align='center', out.width='100%'}
+par(mfrow=c(1,3))
+plot_temporal_regression_q(
+  data_ESP_min$Quantile_0.05, 
+  data_ESP_min$Quantile_0.95, 
+  data_ESP_min$Year, 
+  'Minimum temperature \nquantiles 0.05 and 0.95')
+plot_temporal_regression_q(
+  data_ESP_mean$Quantile_0.05, 
+  data_ESP_mean$Quantile_0.95, 
+  data_ESP_mean$Year, 
+  'Average temperature \nquantiles 0.05 and 0.95')
+plot_temporal_regression_q(
+  data_ESP_max$Quantile_0.05, 
+  data_ESP_max$Quantile_0.95, 
+  data_ESP_max$Year, 
+  'Maximum temperature \nquantiles 0.05 and 0.95')
+```
+
+---
+
+None of the 0.05 quantiles coefficients are significant, but all of the 0.95 quantiles coefficients are, with a small increase.
+
+---
+
+### Densities
+#### Minimum temperature
+
+```{r density_esp_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_ESP, "temperature_min", "Spain")
+```
+
+---
+
+#### Maximum temperature
+
+```{r density_esp_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_ESP, "temperature_max", "Spain")
+```
+
+---
+
+It looks like the mode of the minimum temperature is shifting to the right (higher temperatures) over the years. The maximum seems not to change much.
+
+## Geographical points analysis
+
+We will now analyze the data at specific geographical points. We will focus on 4 points in Spain, one in the Pyrenees (North), one in the center of the country around Madrid, one in Galicia (West) and one in the South, in the desert.
+
+```{r map_esp, echo=FALSE, fig.align='center', out.width='100%'}
+leaflet_map <- map_ESP(data_ESP)
+temp_file <- tempfile(fileext = ".png")
+mapshot(leaflet_map, file = temp_file)
+knitr::include_graphics(temp_file)
+```
+
+---
+
+### Median
+
+```{r regression_esp_points, echo=FALSE, fig.align='center', out.width='100%'}
+par(mfrow=c(2,2))
+plot_temporal_regression(
+  aggregate_data_esp_min_north$Median,
+  aggregate_data_esp_mean_north$Median, 
+  aggregate_data_esp_max_north$Median, 
+  aggregate_data_esp_mean_north$Year, 
+  'Regression of the median temperature\nin Spain across years (North)')
+plot_temporal_regression(
+  aggregate_data_esp_min_west$Median,
+  aggregate_data_esp_mean_west$Median, 
+  aggregate_data_esp_max_west$Median, 
+  aggregate_data_esp_mean_west$Year, 
+  'Regression of the median temperature\nin Spain across years (West)')
+plot_temporal_regression(
+  aggregate_data_esp_min_south$Median,
+  aggregate_data_esp_mean_south$Median, 
+  aggregate_data_esp_max_south$Median, 
+  aggregate_data_esp_mean_west$Year, 
+  'Regression of the median temperature\nin Spain across years (South)')
+plot_temporal_regression(
+  aggregate_data_esp_min_center$Median,
+  aggregate_data_esp_mean_center$Median, 
+  aggregate_data_esp_max_center$Median, 
+  aggregate_data_esp_mean_center$Year, 
+  'Regression of the median temperature\nin Spain across years (Center)')
+```
+
+---
+
+We observe that there is no significant increase in the median temperature in Galicia. In the Pyrenees, only the minimum have a significant increase and in the desert in the South, the mean and the minimum have some significant increase. In Madrid, we have the most important increases, and all the coefficients are significant.
+
+We will now analyze the quantiles of order 0.05 and 0.95 of each variable, instead of the medians. We will also plot the regression lines of these quantiles.
+
+---
+
+### Quantiles
+
+```{r linear_regression_esp_quantiles_points, echo=FALSE, fig.align='center', out.width='100%'}
+par(mfrow=c(3,4))
+plot_temporal_regression_q(
+  aggregate_data_esp_min_west$Quantile_0.05, 
+  aggregate_data_esp_min_west$Quantile_0.95, 
+  aggregate_data_esp_min_west$Year, 
+  'Spain west min')
+plot_temporal_regression_q(
+  aggregate_data_esp_min_center$Quantile_0.05, 
+  aggregate_data_esp_min_center$Quantile_0.95, 
+  aggregate_data_esp_min_center$Year, 
+  'Spain center min')
+plot_temporal_regression_q(
+  aggregate_data_esp_min_south$Quantile_0.05, 
+  aggregate_data_esp_min_south$Quantile_0.95, 
+  aggregate_data_esp_min_west$Year, 
+  'Spain south min')
+plot_temporal_regression_q(
+  aggregate_data_esp_min_north$Quantile_0.05, 
+  aggregate_data_esp_min_north$Quantile_0.95, 
+  aggregate_data_esp_min_north$Year, 
+  'Spain north min')
+plot_temporal_regression_q(
+  aggregate_data_esp_mean_west$Quantile_0.05, 
+  aggregate_data_esp_mean_west$Quantile_0.95, 
+  aggregate_data_esp_mean_west$Year, 
+  'Spain west mean')
+plot_temporal_regression_q(
+  aggregate_data_esp_mean_center$Quantile_0.05, 
+  aggregate_data_esp_mean_center$Quantile_0.95, 
+  aggregate_data_esp_mean_center$Year, 
+  'Spain center mean')
+plot_temporal_regression_q(
+  aggregate_data_esp_mean_south$Quantile_0.05, 
+  aggregate_data_esp_mean_south$Quantile_0.95, 
+  aggregate_data_esp_mean_west$Year, 
+  'Spain south mean')
+plot_temporal_regression_q(
+  aggregate_data_esp_mean_north$Quantile_0.05, 
+  aggregate_data_esp_mean_north$Quantile_0.95, 
+  aggregate_data_esp_mean_north$Year, 
+  'Spain north mean')
+plot_temporal_regression_q(
+  aggregate_data_esp_max_west$Quantile_0.05, 
+  aggregate_data_esp_max_west$Quantile_0.95, 
+  aggregate_data_esp_max_west$Year, 
+  'Spain west max')
+plot_temporal_regression_q(
+  aggregate_data_esp_max_center$Quantile_0.05, 
+  aggregate_data_esp_max_center$Quantile_0.95, 
+  aggregate_data_esp_min_center$Year, 
+  'Spain center max')
+plot_temporal_regression_q(
+  aggregate_data_esp_max_south$Quantile_0.05, 
+  aggregate_data_esp_max_south$Quantile_0.95, 
+  aggregate_data_esp_min_west$Year, 
+  'Spain south max')
+plot_temporal_regression_q(
+  aggregate_data_esp_max_north$Quantile_0.05, 
+  aggregate_data_esp_max_north$Quantile_0.95, 
+  aggregate_data_esp_max_north$Year, 
+  'Spain north max')
+```
+
+---
+
+
+---
+
+```{r linear_regression_esp_quantiles_min_south, echo=FALSE, fig.align='center', out.width='100%'}
+
+```
+
+---
+
+```{r linear_regression_esp_quantiles_min_north, echo=FALSE, fig.align='center', out.width='100%'}
+
+```
+
+---
+
+```{r linear_regression_esp_quantiles_min_west, echo=FALSE, fig.align='center', out.width='100%'}
+
+```
+
+---
+
+```{r linear_regression_esp_quantiles_mean_east, echo=FALSE, fig.align='center', out.width='100%'}
+
+```
+
+---
+
+```{r linear_regression_esp_quantiles_mean_south, echo=FALSE, fig.align='center', out.width='100%'}
+
+```
+
+---
+
+```{r linear_regression_esp_quantiles_mean_north, echo=FALSE, fig.align='center', out.width='100%'}
+
+```
+
+---
+
+```{r linear_regression_esp_quantiles_max_west, echo=FALSE, fig.align='center', out.width='100%'}
+
+```
+
+---
+
+```{r linear_regression_esp_quantiles_min_east, echo=FALSE, fig.align='center', out.width='100%'}
+
+```
+
+---
+
+```{r linear_regression_esp_quantiles_max_south, echo=FALSE, fig.align='center', out.width='100%'}
+
+```
+
+---
+
+```{r linear_regression_esp_quantiles_max_north, echo=FALSE, fig.align='center', out.width='100%'}
+
+```
+
+
+# Portugal
+
+## Country level
+
+---
+
+## Geographical points analysis
+
+### Median
+
+```{r regression_prt_points, echo=FALSE, fig.align='center', out.width='100%'}
+par(mfrow=c(1,3))
+plot_temporal_regression(
+  aggregate_data_prt_min_west$Median,
+  aggregate_data_prt_mean_west$Median, 
+  aggregate_data_prt_max_west$Median, 
+  aggregate_data_prt_mean_west$Year, 
+  'Regression of the median temperature\nin Portugal across years (West)')
+plot_temporal_regression(
+  aggregate_data_prt_min_south$Median,
+  aggregate_data_prt_mean_south$Median, 
+  aggregate_data_prt_max_south$Median, 
+  aggregate_data_prt_mean_south$Year, 
+  'Regression of the median temperature\nin Portugal across years (South)')
+plot_temporal_regression(
+  aggregate_data_prt_min_north$Median,
+  aggregate_data_prt_mean_north$Median, 
+  aggregate_data_prt_max_north$Median, 
+  aggregate_data_prt_mean_north$Year, 
+  'Regression of the median temperature\nin Portugal across years (North)')
+```
+
+---
+
+Comments:
+
+---
+
+# Code quantiles
+
+---
+
+
+
+---
+
+
+---
+
+```{r linear_regression_prt_quantiles_min_west, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  aggregate_data_prt_min_west$Quantile_0.05, 
+  aggregate_data_prt_min_west$Quantile_0.95, 
+  aggregate_data_esp_max_west$Year, 
+  'Portugal west min')
+```
+
+---
+
+```{r linear_regression_prt_quantiles_min_south, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  aggregate_data_prt_min_south$Quantile_0.05, 
+  aggregate_data_prt_min_south$Quantile_0.95, 
+  aggregate_data_esp_min_west$Year, 
+  'Portugal south min')
+```
+
+---
+
+```{r linear_regression_prt_quantiles_min_north, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  aggregate_data_prt_min_north$Quantile_0.05, 
+  aggregate_data_prt_min_north$Quantile_0.95, 
+  aggregate_data_esp_max_north$Year, 
+  'Portugal north min')
+```
+
+---
+
+```{r linear_regression_prt_quantiles_mean_west, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  aggregate_data_prt_mean_west$Quantile_0.05, 
+  aggregate_data_prt_mean_west$Quantile_0.95, 
+  aggregate_data_esp_max_west$Year, 
+  'Portugal west mean')
+```
+
+---
+
+```{r linear_regression_prt_quantiles_mean_south, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  aggregate_data_prt_mean_south$Quantile_0.05, 
+  aggregate_data_prt_mean_south$Quantile_0.95, 
+  aggregate_data_esp_min_west$Year, 
+  'Portugal south mean')
+```
+
+---
+
+```{r linear_regression_prt_quantiles_mean_north, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  aggregate_data_prt_mean_north$Quantile_0.05, 
+  aggregate_data_prt_mean_north$Quantile_0.95, 
+  aggregate_data_esp_max_north$Year, 
+  'Portugal north mean')
+```
+
+---
+
+```{r linear_regression_prt_quantiles_max_west, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  aggregate_data_prt_max_west$Quantile_0.05, 
+  aggregate_data_prt_max_west$Quantile_0.95, 
+  aggregate_data_esp_max_west$Year, 
+  'Portugal west max')
+```
+
+---
+
+```{r linear_regression_prt_quantiles_max_south, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  aggregate_data_prt_max_south$Quantile_0.05, 
+  aggregate_data_prt_max_south$Quantile_0.95, 
+  aggregate_data_esp_min_west$Year, 
+  'Portugal south max')
+```
+
+---
+
+```{r linear_regression_prt_quantiles_max_north, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  aggregate_data_prt_max_north$Quantile_0.05, 
+  aggregate_data_prt_max_north$Quantile_0.95, 
+  aggregate_data_esp_max_north$Year, 
+  'Portugal north max')
+```
+
+---

@@ -129,6 +129,9 @@ We can see that the maximum values seem to be increasing over the years.
 ## Geographical points analysis
 
 We will now analyze the data at specific geographical points. We will focus on 4 points in Ukraine, one at the West, that is in a mountainous area, one at the East, that is in a flat area, one at the North which has a continental climate, and one at the South, that is in an area close to the sea.
+We will look at the same plots as for the entire country to see if the results are consistent or not.
+
+---
 
 ```{r ukr_map, echo=FALSE, fig.align='center', out.width='100%'}
 library(mapview)
@@ -139,7 +142,6 @@ mapshot(leaflet_map, file = temp_file)
 knitr::include_graphics(temp_file)
 ```
 
-We will look at the same plots as for the entire country to see if the results are consistent or not.
 
 ---
 
@@ -403,6 +405,8 @@ It looks like there is a bimodal distribution for both the maximum and minimum t
 
 We will now analyze the data at specific geographical points. We will focus on 2 points in Poland, one at the the North by the sea, and one at the south that should face a continental climate.
 
+---
+
 ```{r pol_map, echo=FALSE, fig.align='center', out.width='100%'}
 leaflet_map <- map_POL(data_POL)
 temp_file <- tempfile(fileext = ".png")
@@ -559,9 +563,13 @@ plot_3d_density_by_year(data_ESP, "temperature_max", "Spain")
 
 It looks like the mode of the minimum temperature is shifting to the right (higher temperatures) over the years. The maximum seems not to change much.
 
+---
+
 ## Geographical points analysis
 
 We will now analyze the data at specific geographical points. We will focus on 4 points in Spain, one in the Pyrenees (North), one in the center of the country around Madrid, one in Galicia (West) and one in the South, in the desert.
+
+---
 
 ```{r map_esp, echo=FALSE, fig.align='center', out.width='100%'}
 leaflet_map <- map_ESP(data_ESP)
@@ -678,75 +686,95 @@ plot_temporal_regression_q(
 
 ---
 
+We observe that the northern and western points have non significant coefficients, while the southern and central points have significant coefficients but only for the quantile 0.95 of the minimum temperature. Overall, this does not show any increase of the temperature in Spain.
 
 ---
-
-```{r linear_regression_esp_quantiles_min_south, echo=FALSE, fig.align='center', out.width='100%'}
-
-```
-
----
-
-```{r linear_regression_esp_quantiles_min_north, echo=FALSE, fig.align='center', out.width='100%'}
-
-```
-
----
-
-```{r linear_regression_esp_quantiles_min_west, echo=FALSE, fig.align='center', out.width='100%'}
-
-```
-
----
-
-```{r linear_regression_esp_quantiles_mean_east, echo=FALSE, fig.align='center', out.width='100%'}
-
-```
-
----
-
-```{r linear_regression_esp_quantiles_mean_south, echo=FALSE, fig.align='center', out.width='100%'}
-
-```
-
----
-
-```{r linear_regression_esp_quantiles_mean_north, echo=FALSE, fig.align='center', out.width='100%'}
-
-```
-
----
-
-```{r linear_regression_esp_quantiles_max_west, echo=FALSE, fig.align='center', out.width='100%'}
-
-```
-
----
-
-```{r linear_regression_esp_quantiles_min_east, echo=FALSE, fig.align='center', out.width='100%'}
-
-```
-
----
-
-```{r linear_regression_esp_quantiles_max_south, echo=FALSE, fig.align='center', out.width='100%'}
-
-```
-
----
-
-```{r linear_regression_esp_quantiles_max_north, echo=FALSE, fig.align='center', out.width='100%'}
-
-```
-
 
 # Portugal
 
 ## Country level
 
+First, we plot the regression line of the median of our 3 statistics: minimum, maximum and mean temperature.
+
+---
+
+### Median
+
+```{r regression_prt_country, echo=FALSE, fig.align='center', out.width='100%'}
+data_PRT_max <- read.csv("output_data/PRT/aggregate_max_PRT.csv", header = TRUE, sep = ",")
+data_PRT_mean <- read.csv("output_data/PRT/aggregate_mean_PRT.csv", header = TRUE, sep = ",")
+data_PRT_min <- read.csv("output_data/PRT/aggregate_min_PRT.csv", header = TRUE, sep = ",")
+
+plot_temporal_regression(
+  data_PRT_min$Median,
+  data_PRT_mean$Median, 
+  data_PRT_max$Median, 
+  data_PRT_max$Year, 
+  'Regression of the median temperature in Portugal across years')
+```
+
+---
+
+We observe that there is no significant increase in the median temperature in Portugal. We will now analyze the quantiles of order 0.05 and 0.95 of each variable, instead of the medians. We will also plot the regression lines of these quantiles.
+
+---
+
+### Quantiles
+
+```{r linear_regression_prt_quantiles, echo=FALSE, fig.align='center', out.width='100%'}
+plot_temporal_regression_q(
+  data_PRT_min$Quantile_0.05, 
+  data_PRT_min$Quantile_0.95, 
+  data_PRT_max$Year, 
+  'Regression of the quantiles of order 0.05 and 0.95\nof the temperature in Portugal across years')
+```
+
+---
+
+We observe that there is no significant increase in the quantiles of order 0.05 and 0.95 of the temperature in Portugal.
+
+---
+
+### Densities
+
+#### Minimum temperature
+
+```{r density_prt_min, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_PRT, "temperature_min", "Portugal")
+```
+
+---
+
+#### Maximum temperature
+
+```{r density_prt_max, echo=FALSE, fig.align='center', out.width='100%'}
+plot_3d_density_by_year(data_PRT, "temperature_max", "Portugal")
+```
+
+---
+
+The mode of the minimum temperature in Portugal seems to shift to the right, 
+which means that the minimum temperature is increasing. Nothing can be said 
+about the maximum temperature.
+
 ---
 
 ## Geographical points analysis
+
+We will now analyze the data at specific geographical points. We will focus on 3
+points in Portugal, one at the north close to Galicia, one at the West that have
+an oceanic climate and one at the South close to Andalusia.
+
+---
+
+```{r map_prt, echo=FALSE, fig.align='center', out.width='100%'}
+leaflet_map <- map_PRT(data_PRT)
+temp_file <- tempfile(fileext = ".png")
+mapshot(leaflet_map, file = temp_file)
+knitr::include_graphics(temp_file)
+```
+
+---
 
 ### Median
 
@@ -774,102 +802,55 @@ plot_temporal_regression(
 
 ---
 
-Comments:
+Only the minimum temperature at the North has a significant coefficient, but
+it also has a high variance and the coefficient's value is quite low.
 
 ---
 
-# Code quantiles
+### Quantiles
 
----
-
-
-
----
-
-
----
-
-```{r linear_regression_prt_quantiles_min_west, echo=FALSE, fig.align='center', out.width='100%'}
+```{r linear_regression_prt_quantiles_points, echo=FALSE, fig.align='center', out.width='100%'}
+par(mfrow=c(3,3))
 plot_temporal_regression_q(
   aggregate_data_prt_min_west$Quantile_0.05, 
   aggregate_data_prt_min_west$Quantile_0.95, 
   aggregate_data_esp_max_west$Year, 
   'Portugal west min')
-```
-
----
-
-```{r linear_regression_prt_quantiles_min_south, echo=FALSE, fig.align='center', out.width='100%'}
 plot_temporal_regression_q(
   aggregate_data_prt_min_south$Quantile_0.05, 
   aggregate_data_prt_min_south$Quantile_0.95, 
   aggregate_data_esp_min_west$Year, 
   'Portugal south min')
-```
-
----
-
-```{r linear_regression_prt_quantiles_min_north, echo=FALSE, fig.align='center', out.width='100%'}
 plot_temporal_regression_q(
   aggregate_data_prt_min_north$Quantile_0.05, 
   aggregate_data_prt_min_north$Quantile_0.95, 
   aggregate_data_esp_max_north$Year, 
   'Portugal north min')
-```
-
----
-
-```{r linear_regression_prt_quantiles_mean_west, echo=FALSE, fig.align='center', out.width='100%'}
 plot_temporal_regression_q(
   aggregate_data_prt_mean_west$Quantile_0.05, 
   aggregate_data_prt_mean_west$Quantile_0.95, 
   aggregate_data_esp_max_west$Year, 
   'Portugal west mean')
-```
-
----
-
-```{r linear_regression_prt_quantiles_mean_south, echo=FALSE, fig.align='center', out.width='100%'}
 plot_temporal_regression_q(
   aggregate_data_prt_mean_south$Quantile_0.05, 
   aggregate_data_prt_mean_south$Quantile_0.95, 
   aggregate_data_esp_min_west$Year, 
   'Portugal south mean')
-```
-
----
-
-```{r linear_regression_prt_quantiles_mean_north, echo=FALSE, fig.align='center', out.width='100%'}
 plot_temporal_regression_q(
   aggregate_data_prt_mean_north$Quantile_0.05, 
   aggregate_data_prt_mean_north$Quantile_0.95, 
   aggregate_data_esp_max_north$Year, 
   'Portugal north mean')
-```
-
----
-
-```{r linear_regression_prt_quantiles_max_west, echo=FALSE, fig.align='center', out.width='100%'}
 plot_temporal_regression_q(
   aggregate_data_prt_max_west$Quantile_0.05, 
   aggregate_data_prt_max_west$Quantile_0.95, 
   aggregate_data_esp_max_west$Year, 
   'Portugal west max')
-```
-
----
-
-```{r linear_regression_prt_quantiles_max_south, echo=FALSE, fig.align='center', out.width='100%'}
 plot_temporal_regression_q(
   aggregate_data_prt_max_south$Quantile_0.05, 
   aggregate_data_prt_max_south$Quantile_0.95, 
   aggregate_data_esp_min_west$Year, 
   'Portugal south max')
-```
-
----
-
-```{r linear_regression_prt_quantiles_max_north, echo=FALSE, fig.align='center', out.width='100%'}
 plot_temporal_regression_q(
   aggregate_data_prt_max_north$Quantile_0.05, 
   aggregate_data_prt_max_north$Quantile_0.95, 
@@ -878,3 +859,15 @@ plot_temporal_regression_q(
 ```
 
 ---
+
+Nothing can be said about the quantiles of order 0.05 and 0.95 of the 
+temperature in Portugal since none of the coefficients of the regression lines 
+are significant.
+
+--- 
+
+# Conclusion
+
+We have seen that the temperature in Spain and Portugal do not seem to increase. 
+In Ukraine and Poland it seems that the maximum temperatures tend to be the one 
+increasing the most.

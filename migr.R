@@ -312,13 +312,6 @@ for (i in 1:nrow(new_mig_data)) {
 }
 close(pb)
 
-# save the new_mig_data to a file
-write.csv(new_mig_data, "output_data/new_mig_data_a.csv", row.names = FALSE)
-
-# find row with max value for D_od
-max_D_od <- new_mig_data[which.max(new_mig_data$D_od), ]
-max_D_od
-
 # find index of row at which col origin changes first time to POL
 first_POL <- which(new_mig_data$origin == "POL")[1]
 

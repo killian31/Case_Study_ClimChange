@@ -1,4 +1,5 @@
 library(readxl)
+source("aggregate_data.R")
 
 load("flow_data_for_students.RData") # load mig_data object
 data_UKR <-
@@ -17,155 +18,78 @@ data_PRT <-
   read.csv("data/temperature_daily_grid_PRT.csv",
            header = TRUE,
            sep = ",")
-# filter the data in mig_data to keep only rows where origin is among UKR, ESP, POL, PRT
 
+# convert kelvin to celsius
+kelvin_to_celsius <- function(data) {
+  data$temperature_min <- data$temperature_min - 273.15
+  data$temperature_mean <- data$temperature_mean - 273.15
+  data$temperature_max <- data$temperature_max - 273.15
+  return(data)
+}
+data_UKR <- kelvin_to_celsius(data_UKR)
+data_ESP <- kelvin_to_celsius(data_ESP)
+data_POL <- kelvin_to_celsius(data_POL)
+data_PRT <- kelvin_to_celsius(data_PRT)
+
+# filter the data in mig_data to keep only rows where origin is among UKR, ESP, POL, PRT1
 mig_data <-
   mig_data[mig_data$origin %in% c("UKR", "ESP", "POL", "PRT"),]
 
 # load GDP_pwt1001.xlsx
-
 gdp_data <- read_xlsx("GDP_pwt1001.xlsx", sheet = "Data")
 
 # filter the data in gdp_data to keep only rows where country is among Ukraine, Spain, Poland, Portugal
-
-gdp_data <-
-  gdp_data[gdp_data$country %in% c("Ukraine", "Spain", "Poland", "Portugal"),]
+# gdp_data <-
+#   gdp_data[gdp_data$country %in% c("Ukraine", "Spain", "Poland", "Portugal"),]
 
 # keep only the columns 1 to 5 and 7
-
 gdp_data <- gdp_data[, c(1:5, 7)]
 
 # gdp per capita
-
 gdp_data$gdp_per_capita <- gdp_data$rgdpe / gdp_data$pop
 
 # 5 years average
-
-years <- c(1990, 1995, 2000, 2005, 2010, 2015, 2020)
+years <- c(1980, 1985, 1990, 1995, 2000, 2005, 2010, 2015, 2020)
 
 new_gdp_data <- data.frame()
 
-for (i in 1:6) {
-  # filter the data in gdp_data to keep only rows where year is among years[i] to years[i+1]-1
-  gdp_data_5_years_UKR <-
-    gdp_data[gdp_data$year %in% years[i]:(years[i + 1] - 1) &
-               gdp_data$country == "Ukraine", ]
-  gdp_data_5_years_ESP <-
-    gdp_data[gdp_data$year %in% years[i]:(years[i + 1] - 1) &
-               gdp_data$country == "Spain", ]
-  gdp_data_5_years_POL <-
-    gdp_data[gdp_data$year %in% years[i]:(years[i + 1] - 1) &
-               gdp_data$country == "Poland", ]
-  gdp_data_5_years_PRT <-
-    gdp_data[gdp_data$year %in% years[i]:(years[i + 1] - 1) &
-               gdp_data$country == "Portugal", ]
-  # calculate the mean of the gdp per capita
-  gdp_per_capita_5_years_UKR <-
-    mean(gdp_data_5_years_UKR$gdp_per_capita, na.rm = TRUE)
-  gdp_per_capita_5_years_ESP <-
-    mean(gdp_data_5_years_ESP$gdp_per_capita, na.rm = TRUE)
-  gdp_per_capita_5_years_POL <-
-    mean(gdp_data_5_years_POL$gdp_per_capita, na.rm = TRUE)
-  gdp_per_capita_5_years_PRT <-
-    mean(gdp_data_5_years_PRT$gdp_per_capita, na.rm = TRUE)
-  # add a row to new_gdp_data
-  new_gdp_data <-
-    rbind(
-      new_gdp_data,
-      data.frame(
-        "country" = gdp_data_5_years_UKR$country[1],
-        "countrycode" = gdp_data_5_years_UKR$countrycode[1],
-        "year" = paste(years[i], years[i + 1], sep = "-"),
-        gdp_per_capita = gdp_per_capita_5_years_UKR
-      )
-    )
-  new_gdp_data <-
-    rbind(
-      new_gdp_data,
-      data.frame(
-        "country" = gdp_data_5_years_ESP$country[1],
-        "countrycode" = gdp_data_5_years_ESP$countrycode[1],
-        "year" = paste(years[i], years[i + 1], sep = "-"),
-        gdp_per_capita = gdp_per_capita_5_years_ESP
-      )
-    )
-  new_gdp_data <-
-    rbind(
-      new_gdp_data,
-      data.frame(
-        "country" = gdp_data_5_years_POL$country[1],
-        "countrycode" = gdp_data_5_years_POL$countrycode[1],
-        "year" = paste(years[i], years[i + 1], sep = "-"),
-        gdp_per_capita = gdp_per_capita_5_years_POL
-      )
-    )
-  new_gdp_data <-
-    rbind(
-      new_gdp_data,
-      data.frame(
-        "country" = gdp_data_5_years_PRT$country[1],
-        "countrycode" = gdp_data_5_years_PRT$countrycode[1],
-        "year" = paste(years[i], years[i + 1], sep = "-"),
-        gdp_per_capita = gdp_per_capita_5_years_PRT
-      )
-    )
+# Get unique list of countries from gdp_data
+unique_countries <- unique(gdp_data$country)
+
+for (country in unique_countries) {
+  for (i in 1:8) {
+    # Filter the data in gdp_data for the current country and the current 5-year period
+    gdp_data_5_years <- gdp_data[gdp_data$year %in% years[i]:(years[i + 1] - 1) &
+                                   gdp_data$country == country, ]
+    
+    # Calculate the mean of the gdp per capita for the current country and 5-year period
+    gdp_per_capita_5_years <- mean(gdp_data_5_years$gdp_per_capita, na.rm = TRUE)
+    
+    # Add a row to new_gdp_data for the current country and 5-year period
+    new_gdp_data <- rbind(new_gdp_data, data.frame(
+      "country" = country,
+      "countrycode" = gdp_data_5_years$countrycode[1], # Assuming countrycode is consistent within each country
+      "year" = paste(years[i], years[i + 1], sep = "-"),
+      "gdp_per_capita" = gdp_per_capita_5_years
+    ))
+  }
 }
 
-# ESP
-data_ESP_max <-
-  read.csv("output_data/ESP/aggregate_max_ESP.csv",
-           header = TRUE,
-           sep = ",")
-data_ESP_mean <-
-  read.csv("output_data/ESP/aggregate_mean_ESP.csv",
-           header = TRUE,
-           sep = ",")
-data_ESP_min <-
-  read.csv("output_data/ESP/aggregate_min_ESP.csv",
-           header = TRUE,
-           sep = ",")
+data_UKR_mean <- calculateYearlyStatistics(data_UKR, 1980, 2020, "temperature_mean")
+data_UKR_min <- calculateYearlyStatistics(data_UKR, 1980, 2020, "temperature_min")
+data_UKR_max <- calculateYearlyStatistics(data_UKR, 1980, 2020, "temperature_max")
 
-# POL
-data_POL_max <-
-  read.csv("output_data/POL/aggregate_max_POL.csv",
-           header = TRUE,
-           sep = ",")
-data_POL_mean <-
-  read.csv("output_data/POL/aggregate_mean_POL.csv",
-           header = TRUE,
-           sep = ",")
-data_POL_min <-
-  read.csv("output_data/POL/aggregate_min_POL.csv",
-           header = TRUE,
-           sep = ",")
+data_ESP_mean <- calculateYearlyStatistics(data_ESP, 1980, 2020, "temperature_mean")
+data_ESP_min<- calculateYearlyStatistics(data_ESP, 1980, 2020, "temperature_min")
+data_ESP_max <- calculateYearlyStatistics(data_ESP, 1980, 2020, "temperature_max")
 
-# PRT
-data_PRT_max <-
-  read.csv("output_data/PRT/aggregate_max_PRT.csv",
-           header = TRUE,
-           sep = ",")
-data_PRT_mean <-
-  read.csv("output_data/PRT/aggregate_mean_PRT.csv",
-           header = TRUE,
-           sep = ",")
-data_PRT_min <-
-  read.csv("output_data/PRT/aggregate_min_PRT.csv",
-           header = TRUE,
-           sep = ",")
+data_POL_mean <- calculateYearlyStatistics(data_POL, 1980, 2020, "temperature_mean")
+data_POL_min <- calculateYearlyStatistics(data_POL, 1980, 2020, "temperature_min")
+data_POL_max <- calculateYearlyStatistics(data_POL, 1980, 2020, "temperature_max")
 
-# UKR
-data_UKR_max <-
-  read.csv("output_data/UKR/aggregate_max_UKR.csv",
-           header = TRUE,
-           sep = ",")
-data_UKR_mean <-
-  read.csv("output_data/UKR/aggregate_mean_UKR.csv",
-           header = TRUE,
-           sep = ",")
-data_UKR_min <-
-  read.csv("output_data/UKR/aggregate_min_UKR.csv",
-           header = TRUE,
-           sep = ",")
+data_PRT_mean <- calculateYearlyStatistics(data_PRT, 1980, 2020, "temperature_mean")
+data_PRT_min <- calculateYearlyStatistics(data_PRT, 1980, 2020, "temperature_min")
+data_PRT_max <- calculateYearlyStatistics(data_PRT, 1980, 2020, "temperature_max")
 
 # > tail(mig_data)
 # origin dest      year type hat_reverse_open
@@ -187,7 +111,7 @@ data_UKR_min <-
 
 create_new_data <- function(data, country, aggregate_type) {
   new_data <- data.frame()
-  for (i in 1:6) {
+  for (i in 1:8) {
     data_5_years <- data[data$Year %in% years[i]:(years[i + 1] - 1), ]
     if (aggregate_type == "max") {
       data_5_years <- mean(data_5_years$Maximum, na.rm = TRUE)
@@ -224,6 +148,23 @@ new_data_PRT_min <- create_new_data(data_PRT_min, "PRT", "min")
 new_data_UKR_max <- create_new_data(data_UKR_max, "UKR", "max")
 new_data_UKR_mean <- create_new_data(data_UKR_mean, "UKR", "mean")
 new_data_UKR_min <- create_new_data(data_UKR_min, "UKR", "min")
+
+write.csv(new_data_ESP_mean, "output_data/ESP/aggregate_mean_ESP.csv", row.names=FALSE)
+write.csv(new_data_ESP_max, "output_data/ESP/aggregate_max_ESP.csv", row.names=FALSE)
+write.csv(new_data_ESP_min, "output_data/ESP/aggregate_min_ESP.csv", row.names=FALSE)
+
+write.csv(new_data_POL_mean, "output_data/POL/aggregate_mean_POL.csv", row.names=FALSE)
+write.csv(new_data_POL_max, "output_data/POL/aggregate_max_POL.csv", row.names=FALSE)
+write.csv(new_data_POL_min, "output_data/POL/aggregate_min_POL.csv", row.names=FALSE)
+
+write.csv(new_data_PRT_mean, "output_data/PRT/aggregate_mean_PRT.csv", row.names=FALSE)
+write.csv(new_data_PRT_max, "output_data/PRT/aggregate_max_PRT.csv", row.names=FALSE)
+write.csv(new_data_PRT_min, "output_data/PRT/aggregate_min_PRT.csv", row.names=FALSE)
+
+write.csv(new_data_UKR_mean, "output_data/UKR/aggregate_mean_UKR.csv", row.names=FALSE)
+write.csv(new_data_UKR_max, "output_data/UKR/aggregate_max_UKR.csv", row.names=FALSE)
+write.csv(new_data_UKR_min, "output_data/UKR/aggregate_min_UKR.csv", row.names=FALSE)
+
 
 data_ESP <-
   merge(new_data_ESP_min,
@@ -263,11 +204,19 @@ colnames(data_UKR)[1] <- "origin"
 colnames(new_gdp_data)[2] <- "origin"
 
 for (i in 1:nrow(mig_data)) {
-  mig_data[i, "gdp_per_capita"] <-
-    new_gdp_data[new_gdp_data$origin == mig_data[i, "origin"] &
-                   new_gdp_data$year == mig_data[i, "year"],
-                 "gdp_per_capita"]
+  # add destination country's GDP per capita to migration data. If error, set to NA with tryCatch
+  tryCatch({
+    mig_data[i, "gdp_per_capita"] <-
+      new_gdp_data[new_gdp_data$origin == mig_data[i, "dest"] &
+                     new_gdp_data$year == mig_data[i, "year"],
+                   "gdp_per_capita"]
+  }, error = function(e) {
+    mig_data[i, "gdp_per_capita"] <- NA
+  })
 }
+
+# print proportion of missing values
+print(sum(is.na(mig_data$gdp_per_capita)) / nrow(mig_data))
 
 merge_ESP <-
   merge(mig_data[mig_data$origin == "ESP", ], data_ESP, by = c("origin", "year"))
@@ -364,43 +313,20 @@ for (i in 1:nrow(new_mig_data)) {
 close(pb)
 
 # save the new_mig_data to a file
-write.csv(new_mig_data, "output_data/new_mig_data.csv", row.names = FALSE)
+write.csv(new_mig_data, "output_data/new_mig_data_a.csv", row.names = FALSE)
 
-# print head(new_mig_data) as a markdown table
-head_data <- head(new_mig_data)
-knitr::kable(head_data, format = "markdown")
+# find row with max value for D_od
+max_D_od <- new_mig_data[which.max(new_mig_data$D_od), ]
+max_D_od
 
-summary(new_mig_data)
-colnames(new_mig_data)
-# [1] "origin"           "year"             "dest"             "type"             "hat_reverse_open" "gdp_per_capita"
-# [7] "min_temperature"  "mean_temperature" "max_temperature"  "dist"             "origin_lon"       "origin_lat"
-# [13] "dest_lon"         "dest_lat"
+# find index of row at which col origin changes first time to POL
+first_POL <- which(new_mig_data$origin == "POL")[1]
 
-# summary statistics for the new_mig_data
-summary(new_mig_data[, c(
-  "hat_reverse_open",
-  "gdp_per_capita",
-  "min_temperature",
-  "mean_temperature",
-  "max_temperature",
-  "dist"
-)])
+# rm col type, origin_lon, origin_lat, dest_lon, dest_lat
+new_mig_data <- new_mig_data[, -c(4, 10:13)]
+# rename hat_reverse_open col to Y_odt
+colnames(new_mig_data)[4] <- "Y_odt"
+sample <- new_mig_data[(first_POL - 3):(first_POL + 2), ]
+sample
 
-# plots
-
-# plot the distribution of the hat_reverse_open variable
-mig_data_flux <-
-  new_mig_data[new_mig_data$hat_reverse_open > 20000, ]
-
-hist(
-  mig_data_flux$hat_reverse_open,
-  breaks = 200,
-  main = "Frequency histogram of the hat_reverse_open variable",
-  xlab = "hat_reverse_open",
-  ylab = "Frequency",
-  col = "lightblue",
-  border = "black",
-  freq = FALSE
-)
-
-
+write.csv(new_mig_data, "output_data/final_database_a.csv", row.names = FALSE)
